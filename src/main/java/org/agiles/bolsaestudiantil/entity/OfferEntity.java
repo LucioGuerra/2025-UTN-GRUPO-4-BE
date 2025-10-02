@@ -15,8 +15,8 @@ public class OfferEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    private Set<StudentEntity> students;
+    @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<StudentOfferEntity> students;
 
 
     public OfferEntity() {

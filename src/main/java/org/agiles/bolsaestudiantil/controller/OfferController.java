@@ -14,8 +14,8 @@ public class OfferController {
 
     private final OfferService offerService;
 
-    @PostMapping("/{offer_id}/apply")
-    public ResponseEntity<OfferDTO> applyToOffer(@RequestParam Long student_id, @PathVariable Long offer_id){
-        return ResponseEntity.status(HttpStatus.OK).body(offerService.applyToOffer( offer_id, student_id));
+    @PostMapping("/{offerId}/apply")
+    public ResponseEntity<OfferDTO> applyToOffer(@RequestBody Long studentId, @RequestBody(required = false) String coverLetter, @PathVariable Long offerId){
+        return ResponseEntity.status(HttpStatus.OK).body(offerService.applyToOffer(offerId, studentId, coverLetter));
     }
 }
