@@ -29,22 +29,8 @@ public class OfferService {
         OfferEntity offer = offerRepository.findById(offerId)
                 .orElseThrow(() -> new EntityNotFoundException("Offer not found with id: " + offerId));
 
-        StudentOfferId id = new StudentOfferId(student.getId(), offer.getId());
-
-        if (studentOfferRepository.existsById(id)) {
-            throw new UnijobsException("STUDENT_ALREADY_APPLIED", "The student has already applied to this offer.");
-        }
-
-        StudentOfferEntity relation = new StudentOfferEntity();
-        relation.setId(id);
-        relation.setStudent(student);
-        relation.setOffer(offer);
-        relation.setCoverLetter(coverLetter);
-
-        studentOfferRepository.save(relation);
-
-        offer.getStudents().add(relation);
-        student.getOffers().add(relation);
+        offer.addStudent(student, coverLetter);
+        offerRepository.save(offer);
 
         return offerMapper.toDTO(offer);
     }
