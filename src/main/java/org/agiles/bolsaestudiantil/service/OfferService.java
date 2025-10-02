@@ -3,11 +3,9 @@ package org.agiles.bolsaestudiantil.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.agiles.bolsaestudiantil.dto.response.OfferDTO;
 import org.agiles.bolsaestudiantil.entity.OfferEntity;
 import org.agiles.bolsaestudiantil.entity.StudentEntity;
 import org.agiles.bolsaestudiantil.entity.StudentOfferEntity;
-import org.agiles.bolsaestudiantil.entity.StudentOfferId;
 import org.agiles.bolsaestudiantil.exception.UnijobsException;
 import org.agiles.bolsaestudiantil.mapper.OfferMapper;
 import org.agiles.bolsaestudiantil.repository.OfferRepository;
@@ -22,7 +20,6 @@ public class OfferService {
 
     private final OfferRepository offerRepository;
     private final StudentOfferRepository studentOfferRepository;
-    private final OfferMapper offerMapper;
     private final StudentService studentService;
 
     @Transactional

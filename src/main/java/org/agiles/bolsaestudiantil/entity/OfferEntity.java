@@ -24,21 +24,15 @@ public class OfferEntity {
     }
 
     public void addStudent(StudentEntity student, String coverLetter) {
-        StudentOfferEntity relation = new StudentOfferEntity();
+        if (student == null) {
+            throw new IllegalArgumentException("Student cannot be null");
+        }
 
-        relation.setId(new StudentOfferId(student.getId(), this.getId()));
-        relation.setStudent(student);
-        relation.setOffer(this);
-        relation.setCoverLetter(coverLetter);
-
-        students.add(relation);
-        student.getOffers().add(relation);
-    }
-
-    public void removeStudent(StudentEntity student) {
-        if (students == null) return;
-
-        students.removeIf(rel -> rel.getStudent().equals(student));
-        student.getOffers().removeIf(rel -> rel.getOffer().equals(this));
+        StudentOfferEntity studentOffer = new StudentOfferEntity();
+        studentOffer.setStudent(student);
+        studentOffer.setOffer(this);
+        studentOffer.setCoverLetter(coverLetter);
+        this.students.add(studentOffer);
+        student.getOffers().add(studentOffer);
     }
 }

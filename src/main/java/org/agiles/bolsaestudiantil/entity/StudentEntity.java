@@ -19,4 +19,8 @@ public class StudentEntity {
 
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<StudentOfferEntity> offers;
+
+    public  StudentEntity() {
+        offers = new HashSet<>();
+    }
 }
