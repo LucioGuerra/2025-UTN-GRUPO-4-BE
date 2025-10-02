@@ -1,0 +1,9 @@
+package org.agiles.bolsaestudiantil.dto.response;
+
+import lombok.Data;
+
+@Data
+public class AttributeDTO {
+    private Long id;
+    private String name;
+}
