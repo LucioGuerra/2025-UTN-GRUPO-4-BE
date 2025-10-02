@@ -1,17 +1,22 @@
 package org.agiles.bolsaestudiantil.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.HashSet;
+import java.util.Set;
 
 @Entity
+@Getter
+@Setter
 public class OfferEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private HashSet<StudentEntity> students;
+    @ManyToMany(fetch = FetchType.LAZY)
+    private Set<StudentEntity> students;
 
 
     public OfferEntity() {
