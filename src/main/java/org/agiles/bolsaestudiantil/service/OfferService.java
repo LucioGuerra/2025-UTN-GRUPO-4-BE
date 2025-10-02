@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.response.OfferDTO;
 import org.agiles.bolsaestudiantil.entity.OfferEntity;
 import org.agiles.bolsaestudiantil.entity.StudentEntity;
+import org.agiles.bolsaestudiantil.mapper.OfferMapper;
 import org.agiles.bolsaestudiantil.repository.OfferRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class OfferService {
 
     private final OfferRepository offerRepository;
+    private final OfferMapper offerMapper;
     private final StudentService studentService;
 
     public OfferDTO applyToOffer(Long offerId, Long studentId) {
@@ -23,6 +25,6 @@ public class OfferService {
 
         offerRepository.save(offer);
 
-        return mapToDTO(offer);
+        return offerMapper.toDTO(offer);
     }
 }
