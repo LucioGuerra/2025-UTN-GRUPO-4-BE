@@ -8,16 +8,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StudentOfferEntity {
-    @EmbeddedId
-    private StudentOfferId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private  Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("studentId")
     @JoinColumn(name = "student_id")
     private StudentEntity student;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("offerId")
     @JoinColumn(name = "offer_id")
     private OfferEntity offer;
 
