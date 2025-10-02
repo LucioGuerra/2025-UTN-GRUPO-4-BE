@@ -25,6 +25,8 @@ public class OfferService {
 
         offerRepository.save(offer);
 
-        return offerMapper.toDTO(offer);
+        OfferDTO dto = offerMapper.toDTO(offer);
+
+        return dto;
     }
 }
