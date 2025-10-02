@@ -14,6 +14,8 @@ import org.agiles.bolsaestudiantil.repository.OfferRepository;
 import org.agiles.bolsaestudiantil.repository.StudentOfferRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class OfferService {
@@ -24,15 +26,22 @@ public class OfferService {
     private final StudentService studentService;
 
     @Transactional
-    public OfferDTO applyToOffer(Long offerId, Long studentId, String coverLetter) {
+    public void applyToOffer(Long offerId, Long studentId, String coverLetter) {
         StudentEntity student = studentService.findById(studentId);
         OfferEntity offer = offerRepository.findById(offerId)
                 .orElseThrow(() -> new EntityNotFoundException("Offer not found with id: " + offerId));
 
+        this.validatePreviousApplication(offerId, studentId);
+
         offer.addStudent(student, coverLetter);
         offerRepository.save(offer);
-
-        return offerMapper.toDTO(offer);
     }
 
+
+    private void validatePreviousApplication(Long offerId, Long studentId) {
+        Optional<StudentOfferEntity> studentOfferOpt = studentOfferRepository.findByStudentAndOffer(studentId, offerId);
+        if (studentOfferOpt.isPresent()) {
+            throw new UnijobsException("STUDENT_ALREADY_APPLIED", "Student with id " + studentId + " has already applied to offer with id " + offerId);
+        }
+    }
 }

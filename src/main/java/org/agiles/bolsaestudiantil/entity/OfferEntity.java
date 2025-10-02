@@ -25,6 +25,7 @@ public class OfferEntity {
 
     public void addStudent(StudentEntity student, String coverLetter) {
         StudentOfferEntity relation = new StudentOfferEntity();
+
         relation.setId(new StudentOfferId(student.getId(), this.getId()));
         relation.setStudent(student);
         relation.setOffer(this);
