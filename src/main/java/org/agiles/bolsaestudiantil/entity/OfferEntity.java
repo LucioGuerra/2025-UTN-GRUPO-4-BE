@@ -23,16 +23,21 @@ public class OfferEntity {
         this.students = new HashSet<>();
     }
 
-    public void addStudent(StudentEntity student) {
-        if (students == null) {
-            students = new HashSet<>();
-        }
-        students.add(student);
+    public void addStudent(StudentEntity student, String coverLetter) {
+        StudentOfferEntity relation = new StudentOfferEntity();
+        relation.setId(new StudentOfferId(student.getId(), this.getId()));
+        relation.setStudent(student);
+        relation.setOffer(this);
+        relation.setCoverLetter(coverLetter);
+
+        students.add(relation);
+        student.getOffers().add(relation);
     }
 
     public void removeStudent(StudentEntity student) {
-        if (students != null) {
-            students.remove(student);
-        }
+        if (students == null) return;
+
+        students.removeIf(rel -> rel.getStudent().equals(student));
+        student.getOffers().removeIf(rel -> rel.getOffer().equals(this));
     }
 }
