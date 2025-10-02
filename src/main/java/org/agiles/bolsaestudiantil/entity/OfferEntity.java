@@ -15,9 +15,22 @@ public class OfferEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String title;
+
+    @Column(nullable = false, length = 1000)
+    private String description;
+
+    private String requirements;
+    private String modality;
+    private String location;
+    private String approximatePayment;
+
+    @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<OfferAttributeEntity> attributes = new HashSet<>();
+
     @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<StudentOfferEntity> students;
-
 
     public OfferEntity() {
         this.students = new HashSet<>();
