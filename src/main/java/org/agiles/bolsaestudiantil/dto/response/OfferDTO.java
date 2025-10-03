@@ -4,7 +4,6 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Data
 public class OfferDTO {
@@ -19,5 +18,4 @@ public class OfferDTO {
     private LocalDateTime publishDate;
     private LocalDateTime closeDate;
     private String status;
-    private Set<StudentDTO> students;
 }
