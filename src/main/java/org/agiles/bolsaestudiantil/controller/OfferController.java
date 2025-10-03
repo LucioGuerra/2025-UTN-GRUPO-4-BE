@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.request.ApplyDTO;
 import org.agiles.bolsaestudiantil.dto.request.OfferFilterDTO;
 import org.agiles.bolsaestudiantil.dto.request.OfferRequestDTO;
-import org.agiles.bolsaestudiantil.dto.response.OfferListDTO;
+import org.agiles.bolsaestudiantil.dto.response.OfferDTO;
 import org.agiles.bolsaestudiantil.dto.response.OfferResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.PagedResponseDTO;
 import org.agiles.bolsaestudiantil.service.OfferService;
@@ -20,7 +20,7 @@ public class OfferController {
     private final OfferService offerService;
 
     @GetMapping
-    public ResponseEntity<PagedResponseDTO<OfferListDTO>> getOffers(
+    public ResponseEntity<PagedResponseDTO<OfferDTO>> getOffers(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String company,
             @RequestParam(required = false) String contractType,
@@ -36,7 +36,7 @@ public class OfferController {
         filters.setLocation(location);
         filters.setStatus(status);
 
-        PagedResponseDTO<OfferListDTO> response = offerService.getOffers(filters, page, size);
+        PagedResponseDTO<OfferDTO> response = offerService.getOffers(filters, page, size);
         return ResponseEntity.ok(response);
     }
 
