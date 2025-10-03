@@ -3,12 +3,10 @@ package org.agiles.bolsaestudiantil.controller;
 import lombok.RequiredArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.request.ApplyDTO;
 import org.agiles.bolsaestudiantil.dto.request.OfferFilterDTO;
-import org.agiles.bolsaestudiantil.dto.response.OfferListDTO;
-import org.agiles.bolsaestudiantil.dto.response.PagedResponseDTO;
 import org.agiles.bolsaestudiantil.dto.request.OfferRequestDTO;
-import org.agiles.bolsaestudiantil.dto.response.OfferDTO;
+import org.agiles.bolsaestudiantil.dto.response.OfferListDTO;
 import org.agiles.bolsaestudiantil.dto.response.OfferResponseDTO;
-import org.agiles.bolsaestudiantil.entity.OfferEntity;
+import org.agiles.bolsaestudiantil.dto.response.PagedResponseDTO;
 import org.agiles.bolsaestudiantil.service.OfferService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +38,8 @@ public class OfferController {
 
         PagedResponseDTO<OfferListDTO> response = offerService.getOffers(filters, page, size);
         return ResponseEntity.ok(response);
+    }
+
     @PostMapping
     public ResponseEntity<OfferResponseDTO> createOffer(@RequestBody OfferRequestDTO requestDTO){
         OfferResponseDTO createdOffer = offerService.createOffer(requestDTO);

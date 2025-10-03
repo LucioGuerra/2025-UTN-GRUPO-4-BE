@@ -9,5 +9,6 @@ import org.mapstruct.Mapping;
 public interface StudentMapper {
     StudentDTO toDTO(StudentEntity entity);
 
+    @Mapping(target = "offers", ignore = true)
     StudentEntity toEntity(StudentDTO dto);
 }

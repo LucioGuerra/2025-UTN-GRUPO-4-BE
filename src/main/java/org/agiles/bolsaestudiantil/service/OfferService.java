@@ -36,8 +36,6 @@ public class OfferService {
     private final StudentService studentService;
     private final AttributeRepository attributeRepository;
     private final OfferMapper offerMapper;
-  
-    private final OfferMapper offerMapper;
 
     public PagedResponseDTO<OfferListDTO> getOffers(OfferFilterDTO filters, int page, int size) {
         // Validar tamaño de página
@@ -116,7 +114,7 @@ public class OfferService {
                 .orElseGet(() -> {
                     AttributeEntity attributeEntity = new AttributeEntity();
                     attributeEntity.setName(name);
-                    return attributeEntity;
+                    return attributeRepository.save(attributeEntity);
                 });
     }
 }
