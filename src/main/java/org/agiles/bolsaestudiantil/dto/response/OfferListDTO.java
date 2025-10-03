@@ -1,0 +1,21 @@
+package org.agiles.bolsaestudiantil.dto.response;
+
+import lombok.Data;
+
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+
+@Data
+public class OfferListDTO {
+    private Long id;
+    private String title;
+    private String description;
+    private String company;
+    private String location;
+    private BigDecimal salary;
+    private String workType;
+    private String contractType;
+    private LocalDateTime publishDate;
+    private LocalDateTime closeDate;
+    private String status;
+}

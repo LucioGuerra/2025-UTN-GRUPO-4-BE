@@ -4,7 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.request.OfferFilterDTO;
-import org.agiles.bolsaestudiantil.dto.response.OfferDTO;
+import org.agiles.bolsaestudiantil.dto.response.OfferListDTO;
 import org.agiles.bolsaestudiantil.dto.response.PagedResponseDTO;
 import org.agiles.bolsaestudiantil.entity.OfferEntity;
 import org.agiles.bolsaestudiantil.entity.StudentEntity;
@@ -34,7 +34,7 @@ public class OfferService {
     private final StudentService studentService;
     private final OfferMapper offerMapper;
 
-    public PagedResponseDTO<OfferDTO> getOffers(OfferFilterDTO filters, int page, int size) {
+    public PagedResponseDTO<OfferListDTO> getOffers(OfferFilterDTO filters, int page, int size) {
         // Validar tamaño de página
         if (size != 5 && size != 10 && size != 20) {
             size = 10; // valor por defecto
@@ -50,13 +50,13 @@ public class OfferService {
         Page<OfferEntity> offerPage = offerRepository.findAll(spec, pageable);
 
         // Mapear entidades a DTOs
-        List<OfferDTO> offerDTOs = offerPage.getContent().stream()
+        List<OfferListDTO> offerListDTOs = offerPage.getContent().stream()
                 .map(offerMapper::toDTO)
                 .collect(Collectors.toList());
 
         // Construir respuesta paginada
         return new PagedResponseDTO<>(
-                offerDTOs,
+                offerListDTOs,
                 offerPage.getNumber(),
                 offerPage.getSize(),
                 offerPage.getTotalElements(),
