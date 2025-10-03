@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,13 +20,28 @@ public class OfferEntity {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false, length = 1000)
+    @Column(length = 2000)
     private String description;
 
-    private String requirements;
-    private String modality;
+    @Column(nullable = false)
+    private String company;
+
     private String location;
-    private String approximatePayment;
+
+    private BigDecimal salary;
+
+    private String workType; // full-time, part-time, freelance, internship
+
+    @Column(nullable = false)
+    private String contractType; // permanente, temporal, pasantía, etc.
+
+    @Column(nullable = false)
+    private LocalDateTime publishDate;
+
+    private LocalDateTime closeDate;
+
+    @Column(nullable = false)
+    private String status; // active, closed, expired
 
     @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OfferAttributeEntity> attributes = new HashSet<>();
@@ -34,6 +51,8 @@ public class OfferEntity {
 
     public OfferEntity() {
         this.students = new HashSet<>();
+        this.publishDate = LocalDateTime.now();
+        this.status = "active";
     }
 
     public void addStudent(StudentEntity student, String coverLetter) {
