@@ -1,22 +1,34 @@
 package org.agiles.bolsaestudiantil.service;
 
+
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.agiles.bolsaestudiantil.dto.request.OfferFilterDTO;
 import org.agiles.bolsaestudiantil.dto.request.OfferRequestDTO;
+import org.agiles.bolsaestudiantil.dto.response.OfferListDTO;
 import org.agiles.bolsaestudiantil.dto.response.OfferResponseDTO;
+import org.agiles.bolsaestudiantil.dto.response.PagedResponseDTO;
 import org.agiles.bolsaestudiantil.entity.*;
 import org.agiles.bolsaestudiantil.exception.UnijobsException;
 import org.agiles.bolsaestudiantil.mapper.OfferMapper;
 import org.agiles.bolsaestudiantil.repository.AttributeRepository;
 import org.agiles.bolsaestudiantil.repository.OfferRepository;
 import org.agiles.bolsaestudiantil.repository.StudentOfferRepository;
+import org.agiles.bolsaestudiantil.specification.OfferSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OfferService {
 
     private final OfferRepository offerRepository;
@@ -24,6 +36,40 @@ public class OfferService {
     private final StudentService studentService;
     private final AttributeRepository attributeRepository;
     private final OfferMapper offerMapper;
+  
+    private final OfferMapper offerMapper;
+
+    public PagedResponseDTO<OfferListDTO> getOffers(OfferFilterDTO filters, int page, int size) {
+        // Validar tamaño de página
+        if (size != 5 && size != 10 && size != 20) {
+            size = 10; // valor por defecto
+        }
+
+        // Crear Pageable con ordenamiento por fecha de publicación (más recientes primero)
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "publishDate"));
+
+        // Crear especificación de filtros
+        Specification<OfferEntity> spec = OfferSpecification.withFilters(filters);
+
+        // Ejecutar consulta
+        Page<OfferEntity> offerPage = offerRepository.findAll(spec, pageable);
+
+        // Mapear entidades a DTOs
+        List<OfferListDTO> offerListDTOs = offerPage.getContent().stream()
+                .map(offerMapper::toDTO)
+                .collect(Collectors.toList());
+
+        // Construir respuesta paginada
+        return new PagedResponseDTO<>(
+                offerListDTOs,
+                offerPage.getNumber(),
+                offerPage.getSize(),
+                offerPage.getTotalElements(),
+                offerPage.getTotalPages(),
+                offerPage.isFirst(),
+                offerPage.isLast()
+        );
+    }
 
     @Transactional
     public void applyToOffer(Long offerId, Long studentId, String coverLetter) {

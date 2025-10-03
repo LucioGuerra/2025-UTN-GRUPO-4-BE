@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
-public class OfferDTO {
+public class OfferListDTO {
     private Long id;
     private String title;
     private String description;
