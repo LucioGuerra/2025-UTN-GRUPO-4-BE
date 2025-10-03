@@ -13,16 +13,18 @@ public interface OfferMapper {
     // Para listado de ofertas (sin estudiantes)
     OfferListDTO toDTO(OfferEntity entity);
 
+    @Mapping(target = "attributes", ignore = true)
+    @Mapping(target = "students", ignore = true)
     OfferEntity toEntity(OfferListDTO dto);
 
     // Para respuesta completa de oferta (con atributos)
     OfferResponseDTO toOfferResponseDTO(OfferEntity entity);
 
-    OfferResponseDTO toOfferResponseDTO(OfferEntity entity);
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "students", ignore = true)
     @Mapping(target = "attributes", ignore = true)
     @Mapping(target = "publishDate", ignore = true)
     @Mapping(target = "status", ignore = true)
+    @Mapping(target = "closeDate", ignore = true)
     OfferEntity createOfferRequestToEntity(OfferRequestDTO dto);
 }
