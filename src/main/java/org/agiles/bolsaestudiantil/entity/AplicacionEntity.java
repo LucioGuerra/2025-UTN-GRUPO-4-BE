@@ -7,18 +7,18 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class StudentOfferEntity {
+public class AplicacionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "student_id")
-    private StudentEntity student;
+    @JoinColumn(name = "aplicante_id")
+    private AplicanteEntity aplicante;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "offer_id")
-    private OfferEntity offer;
+    @JoinColumn(name = "oferta_id")
+    private OfferEntity oferta;
 
-    private String coverLetter;
+    private String cartaPresentacion;
 }
