@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class ApplyDTO {
-    private Long studentId;
-    private String coverLetter;
+    private Long aplicanteId;
+    private String cartaPresentacion;
 }

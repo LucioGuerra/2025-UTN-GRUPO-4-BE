@@ -46,25 +46,25 @@ public class OfferEntity {
     @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<OfferAttributeEntity> attributes = new HashSet<>();
 
-    @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<StudentOfferEntity> students;
+    @OneToMany(mappedBy = "oferta", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<AplicacionEntity> aplicaciones;
 
     public OfferEntity() {
-        this.students = new HashSet<>();
+        this.aplicaciones = new HashSet<>();
         this.publishDate = LocalDateTime.now();
         this.status = "active";
     }
 
-    public void addStudent(StudentEntity student, String coverLetter) {
-        if (student == null) {
-            throw new IllegalArgumentException("Student cannot be null");
+    public void addAplicante(AplicanteEntity aplicante, String cartaPresentacion) {
+        if (aplicante == null) {
+            throw new IllegalArgumentException("Aplicante no puede ser null");
         }
 
-        StudentOfferEntity studentOffer = new StudentOfferEntity();
-        studentOffer.setStudent(student);
-        studentOffer.setOffer(this);
-        studentOffer.setCoverLetter(coverLetter);
-        this.students.add(studentOffer);
-        student.getOffers().add(studentOffer);
+        AplicacionEntity aplicacion = new AplicacionEntity();
+        aplicacion.setAplicante(aplicante);
+        aplicacion.setOferta(this);
+        aplicacion.setCartaPresentacion(cartaPresentacion);
+        this.aplicaciones.add(aplicacion);
+        aplicante.getOfertas().add(aplicacion);
     }
 }

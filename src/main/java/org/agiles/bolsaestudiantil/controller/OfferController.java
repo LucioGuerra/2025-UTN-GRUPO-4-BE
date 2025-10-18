@@ -48,7 +48,7 @@ public class OfferController {
 
     @PostMapping("/{offerId}/apply")
     public ResponseEntity<Void> applyToOffer(@RequestBody ApplyDTO applyDTO, @PathVariable Long offerId){
-        offerService.applyToOffer(offerId, applyDTO.getStudentId(), applyDTO.getCoverLetter());
+        offerService.applyToOffer(offerId, applyDTO.getAplicanteId(), applyDTO.getCartaPresentacion());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

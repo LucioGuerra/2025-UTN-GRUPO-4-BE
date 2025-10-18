@@ -14,7 +14,7 @@ import org.agiles.bolsaestudiantil.exception.UnijobsException;
 import org.agiles.bolsaestudiantil.mapper.OfferMapper;
 import org.agiles.bolsaestudiantil.repository.AttributeRepository;
 import org.agiles.bolsaestudiantil.repository.OfferRepository;
-import org.agiles.bolsaestudiantil.repository.StudentOfferRepository;
+import org.agiles.bolsaestudiantil.repository.AplicacionRepository;
 import org.agiles.bolsaestudiantil.specification.OfferSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,8 +32,8 @@ import java.util.stream.Collectors;
 public class OfferService {
 
     private final OfferRepository offerRepository;
-    private final StudentOfferRepository studentOfferRepository;
-    private final StudentService studentService;
+    private final AplicacionRepository aplicacionRepository;
+    private final AplicanteService aplicanteService;
     private final AttributeRepository attributeRepository;
     private final OfferMapper offerMapper;
 
@@ -70,22 +70,22 @@ public class OfferService {
     }
 
     @Transactional
-    public void applyToOffer(Long offerId, Long studentId, String coverLetter) {
-        StudentEntity student = studentService.findById(studentId);
+    public void applyToOffer(Long offerId, Long aplicanteId, String cartaPresentacion) {
+        AplicanteEntity aplicante = aplicanteService.findById(aplicanteId);
         OfferEntity offer = offerRepository.findById(offerId)
-                .orElseThrow(() -> new EntityNotFoundException("Offer not found with id: " + offerId));
+                .orElseThrow(() -> new EntityNotFoundException("Oferta no encontrada con id: " + offerId));
 
-        this.validatePreviousApplication(offerId, studentId);
+        this.validatePreviousApplication(offerId, aplicanteId);
 
-        offer.addStudent(student, coverLetter);
+        offer.addAplicante(aplicante, cartaPresentacion);
         offerRepository.save(offer);
     }
 
 
-    private void validatePreviousApplication(Long offerId, Long studentId) {
-        Optional<StudentOfferEntity> studentOfferOpt = studentOfferRepository.findByStudentAndOffer(studentId, offerId);
-        if (studentOfferOpt.isPresent()) {
-            throw new UnijobsException("STUDENT_ALREADY_APPLIED", "Student with id " + studentId + " has already applied to offer with id " + offerId);
+    private void validatePreviousApplication(Long offerId, Long aplicanteId) {
+        Optional<AplicacionEntity> aplicacionOpt = aplicacionRepository.findByAplicanteAndOferta(aplicanteId, offerId);
+        if (aplicacionOpt.isPresent()) {
+            throw new UnijobsException("APLICANTE_YA_APLICADO", "Aplicante con id " + aplicanteId + " ya ha aplicado a la oferta con id " + offerId);
         }
     }
 

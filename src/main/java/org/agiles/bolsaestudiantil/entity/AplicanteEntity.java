@@ -10,16 +10,16 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-public class StudentEntity {
+public class AplicanteEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<StudentOfferEntity> offers;
+    @OneToMany(mappedBy = "aplicante", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<AplicacionEntity> ofertas;
 
-    public  StudentEntity() {
-        offers = new HashSet<>();
+    public  AplicanteEntity() {
+        ofertas = new HashSet<>();
     }
 }
