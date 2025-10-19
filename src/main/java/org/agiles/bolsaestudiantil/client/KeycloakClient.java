@@ -1,6 +1,8 @@
 package org.agiles.bolsaestudiantil.client;
 
+import org.agiles.bolsaestudiantil.dto.authentication.LoginResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -15,13 +17,9 @@ public interface KeycloakClient {
             value = "/realms/{realm}/protocol/openid-connect/token",
             consumes = "application/x-www-form-urlencoded"
     )
-    Map<String, Object> login(
+    LoginResponse login(
             @PathVariable("realm") String realm,
-            @RequestParam("grant_type") String grantType,
-            @RequestParam("client_id") String clientId,
-            @RequestParam("client_secret") String clientSecret,
-            @RequestParam("username") String username,
-            @RequestParam("password") String password
+            @RequestBody MultiValueMap<String, String> form
     );
 
     @PostMapping("/admin/realms/{realm}/users")
