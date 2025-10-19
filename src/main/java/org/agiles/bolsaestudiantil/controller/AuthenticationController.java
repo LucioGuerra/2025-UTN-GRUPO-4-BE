@@ -3,7 +3,10 @@ package org.agiles.bolsaestudiantil.controller;
 import lombok.AllArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.authentication.LoginRequest;
 import org.agiles.bolsaestudiantil.dto.authentication.LoginResponse;
+import org.agiles.bolsaestudiantil.dto.authentication.RegisterRequest;
 import org.agiles.bolsaestudiantil.service.AuthenticationService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +27,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
-        return ResponseEntity.ok("Register");
+    public ResponseEntity<Void> register(@RequestBody RegisterRequest request) {
+        authService.register(request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
