@@ -10,6 +10,9 @@ import java.time.LocalDateTime;
 @Entity
 @Getter
 @Setter
+@Table(uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"aplicante_id", "oferta_id"})
+})
 public class AplicacionEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
