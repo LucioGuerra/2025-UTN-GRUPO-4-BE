@@ -29,7 +29,7 @@ public class AplicanteEntity {
 
     private String cvFileName;
 
-    @OneToMany(mappedBy = "aplicante", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "aplicante", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
     private Set<AplicacionEntity> ofertas;
 
     public  AplicanteEntity() {
