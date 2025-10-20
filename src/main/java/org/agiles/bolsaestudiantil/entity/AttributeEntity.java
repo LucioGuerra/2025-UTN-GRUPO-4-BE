@@ -19,5 +19,5 @@ public class AttributeEntity {
     private String name;
 
     @OneToMany(mappedBy = "attribute")
-    private Set<OfferAttributeEntity> offers = new HashSet<>();
+    private Set<OfertaAttributeEntity> ofertas = new HashSet<>();
 }

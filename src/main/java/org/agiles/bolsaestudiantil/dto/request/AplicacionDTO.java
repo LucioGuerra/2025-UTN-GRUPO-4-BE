@@ -3,7 +3,8 @@ package org.agiles.bolsaestudiantil.dto.request;
 import lombok.Data;
 
 @Data
-public class ApplyDTO {
-    private Long aplicanteId;
+public class AplicacionDTO {
+    private Long ofertaId;
+    private Long usuarioId;
     private String cartaPresentacion;
 }

@@ -3,6 +3,9 @@ package org.agiles.bolsaestudiantil.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.agiles.bolsaestudiantil.enums.EstadoAplicacion;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -12,13 +15,25 @@ public class AplicacionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "aplicante_id")
     private AplicanteEntity aplicante;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "oferta_id")
-    private OfferEntity oferta;
+    private OfertaEntity oferta;
 
     private String cartaPresentacion;
+
+    @Column(nullable = false)
+    private LocalDateTime fechaAplicacion;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EstadoAplicacion estado;
+
+    public AplicacionEntity() {
+        this.fechaAplicacion = LocalDateTime.now();
+        this.estado = EstadoAplicacion.APLICADO;
+    }
 }
