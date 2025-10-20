@@ -2,6 +2,7 @@ package org.agiles.bolsaestudiantil.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.response.EmpresaDTO;
+import org.agiles.bolsaestudiantil.dto.response.EmpresaSimpleDTO;
 import org.agiles.bolsaestudiantil.service.EmpresaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,5 +45,11 @@ public class EmpresaController {
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         empresaService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<EmpresaSimpleDTO>> searchByNombre(@RequestParam String nombre) {
+        List<EmpresaSimpleDTO> empresas = empresaService.searchByNombre(nombre);
+        return ResponseEntity.ok(empresas);
     }
 }
