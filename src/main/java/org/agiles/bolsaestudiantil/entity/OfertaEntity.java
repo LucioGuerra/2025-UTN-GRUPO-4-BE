@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,28 +11,32 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-public class OfferEntity {
+public class OfertaEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String title;
+    private String titulo;
 
     @Column(length = 2000)
-    private String description;
+    private String descripcion;
+
+    @Column(length = 2000)
+    private String requisitos;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "empresa_id", nullable = false)
+    private EmpresaEntity empresa;
+
+    private String locacion;
+
+    private String pagoAprox;
+
+    private String modalidad; // remoto, híbrido, presencial
 
     @Column(nullable = false)
-    private String company;
-
-    private String location;
-
-    private BigDecimal salary;
-
-    private String workType; // full-time, part-time, freelance, internship
-
-    @Column(nullable = false)
-    private String contractType; // permanente, temporal, pasantía, etc.
+    private String tipoContrato; // permanente, temporal, pasantía, etc.
 
     @Column(nullable = false)
     private LocalDateTime publishDate;
@@ -43,13 +46,13 @@ public class OfferEntity {
     @Column(nullable = false)
     private String status; // active, closed, expired
 
-    @OneToMany(mappedBy = "offer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<OfferAttributeEntity> attributes = new HashSet<>();
+    @OneToMany(mappedBy = "oferta", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<OfertaAttributeEntity> attributes = new HashSet<>();
 
     @OneToMany(mappedBy = "oferta", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AplicacionEntity> aplicaciones;
 
-    public OfferEntity() {
+    public OfertaEntity() {
         this.aplicaciones = new HashSet<>();
         this.publishDate = LocalDateTime.now();
         this.status = "active";

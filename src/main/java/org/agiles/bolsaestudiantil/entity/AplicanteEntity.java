@@ -15,6 +15,19 @@ public class AplicanteEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
+    private String nombre;
+
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    private String carrera;
+
+    private Integer anioIngreso;
+
+    private String cvUrl;
+
+    private String cvFileName;
 
     @OneToMany(mappedBy = "aplicante", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AplicacionEntity> ofertas;
