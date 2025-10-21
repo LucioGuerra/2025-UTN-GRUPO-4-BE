@@ -10,6 +10,7 @@ import org.agiles.bolsaestudiantil.dto.response.PagedResponseDTO;
 import org.agiles.bolsaestudiantil.service.OfertaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -48,6 +49,7 @@ public class OfertaController {
     }
 
     @PostMapping("/aplicar")
+    @PreAuthorize("hasRole('Student')")
     public ResponseEntity<Void> aplicarAOferta(@RequestBody AplicacionDTO aplicacionDTO){
         ofertaService.aplicarAOferta(aplicacionDTO.getOfertaId(), aplicacionDTO.getUsuarioId(), aplicacionDTO.getCartaPresentacion());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

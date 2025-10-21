@@ -6,6 +6,7 @@ import org.agiles.bolsaestudiantil.dto.response.EmpresaSimpleDTO;
 import org.agiles.bolsaestudiantil.service.EmpresaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,12 +37,14 @@ public class EmpresaController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('Organization')")
     public ResponseEntity<EmpresaDTO> update(@PathVariable Long id, @RequestBody EmpresaDTO empresaDTO) {
         EmpresaDTO updatedEmpresa = empresaService.update(id, empresaDTO);
         return ResponseEntity.ok(updatedEmpresa);
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('Organization')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         empresaService.delete(id);
         return ResponseEntity.noContent().build();
