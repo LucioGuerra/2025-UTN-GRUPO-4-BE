@@ -6,7 +6,9 @@ import org.agiles.bolsaestudiantil.client.KeycloakClient;
 import org.agiles.bolsaestudiantil.dto.authentication.LoginRequest;
 import org.agiles.bolsaestudiantil.dto.authentication.LoginResponse;
 import org.agiles.bolsaestudiantil.dto.authentication.RegisterRequest;
+import org.agiles.bolsaestudiantil.event.RegisterUserEvent;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -19,6 +21,7 @@ import java.util.Map;
 public class AuthenticationService {
 
     private final KeycloakClient keycloakClient;
+    private final ApplicationEventPublisher publisher;
 
     @Value("${keycloak.realm}")
     private String realm;
@@ -91,5 +94,7 @@ public class AuthenticationService {
         Map<String, Object> role = keycloakClient.getRoleByName(adminToken, realm, request.getRole());
 
         keycloakClient.assignRole(adminToken, realm, userId, List.of(role));
+
+        publisher.publishEvent(new RegisterUserEvent(request.getFirstName(), request.getLastName(), request.getUsername(), userId, request.getRole()));
     }
 }
