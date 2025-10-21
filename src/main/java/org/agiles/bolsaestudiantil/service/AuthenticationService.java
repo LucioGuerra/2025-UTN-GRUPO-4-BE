@@ -80,5 +80,16 @@ public class AuthenticationService {
 
 
         keycloakClient.createUser(adminToken, realm, user);
+
+        List<Map<String, Object>> users = keycloakClient.getUsersByUsername(adminToken, realm, request.getUsername());
+        if (users.isEmpty()) {
+            throw new RuntimeException("Created user not found with keycloak username" + request.getUsername());
+        }
+
+        String userId = (String) users.get(0).get("id");
+
+        Map<String, Object> role = keycloakClient.getRoleByName(adminToken, realm, request.getRole());
+
+        keycloakClient.assignRole(adminToken, realm, userId, List.of(role));
     }
 }
