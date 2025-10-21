@@ -1,9 +1,15 @@
 package org.agiles.bolsaestudiantil.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.agiles.bolsaestudiantil.dto.request.AplicanteFilterDTO;
+import org.agiles.bolsaestudiantil.dto.request.ModAplicanteDTO;
 import org.agiles.bolsaestudiantil.dto.response.AplicanteDTO;
 import org.agiles.bolsaestudiantil.dto.response.AplicanteListaDTO;
+import org.agiles.bolsaestudiantil.entity.AplicanteEntity;
 import org.agiles.bolsaestudiantil.service.AplicanteService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,4 +31,21 @@ public class AplicanteController {
         AplicanteListaDTO aplicantes = aplicanteService.getAplicantesPorOferta(ofertaId);
         return ResponseEntity.ok(aplicantes);
     }
+
+    @GetMapping
+    public Page<AplicanteEntity> listarAplicantes(
+            AplicanteFilterDTO filter,
+            Pageable pageable
+    ) {
+        return aplicanteService.obtenerAplicantes(filter, pageable);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<AplicanteDTO> actualizarAplicante(
+            @PathVariable Long id,
+            @RequestBody ModAplicanteDTO aplicanteDTO
+    ) {
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
 }
