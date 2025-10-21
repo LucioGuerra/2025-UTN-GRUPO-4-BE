@@ -10,7 +10,7 @@ import java.util.Set;
 @Entity
 @Getter
 @Setter
-public class AplicanteEntity {
+public class AplicanteEntity extends UserEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
