@@ -1,13 +1,13 @@
 package org.agiles.bolsaestudiantil.mapper;
 
 import org.agiles.bolsaestudiantil.dto.response.AttributeDTO;
-import org.agiles.bolsaestudiantil.entity.OfferAttributeEntity;
+import org.agiles.bolsaestudiantil.entity.OfertaAttributeEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface OfferAttributeMapper {
+public interface OfertaAttributeMapper {
     @Mapping(source = "attribute.id", target = "id")
     @Mapping(source = "attribute.name", target = "name")
-    AttributeDTO toAttributeDto(OfferAttributeEntity offerAttribute);
+    AttributeDTO toAttributeDto(OfertaAttributeEntity ofertaAttribute);
 }

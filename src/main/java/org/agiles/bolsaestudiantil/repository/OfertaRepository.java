@@ -1,12 +1,12 @@
 package org.agiles.bolsaestudiantil.repository;
 
-import org.agiles.bolsaestudiantil.entity.OfferEntity;
+import org.agiles.bolsaestudiantil.entity.OfertaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-// Cambiamos asi usa el OfferSpecification
+// Cambiamos asi usa el OfertaSpecification
 // y no tenemos que hacer consultas dinamicas en el service
 @Repository
-public interface OfferRepository extends JpaRepository<OfferEntity, Long>, JpaSpecificationExecutor<OfferEntity> {
+public interface OfertaRepository extends JpaRepository<OfertaEntity, Long>, JpaSpecificationExecutor<OfertaEntity> {
 }
