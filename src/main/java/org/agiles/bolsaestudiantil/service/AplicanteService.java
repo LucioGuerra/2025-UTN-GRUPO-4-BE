@@ -3,6 +3,8 @@ package org.agiles.bolsaestudiantil.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.agiles.bolsaestudiantil.dto.request.AplicanteFilterDTO;
+import org.agiles.bolsaestudiantil.dto.request.ModAplicanteDTO;
 import org.agiles.bolsaestudiantil.dto.response.AplicanteDTO;
 import org.agiles.bolsaestudiantil.dto.response.AplicanteListaDTO;
 import org.agiles.bolsaestudiantil.entity.AplicacionEntity;
@@ -12,6 +14,9 @@ import org.agiles.bolsaestudiantil.mapper.AplicanteMapper;
 import org.agiles.bolsaestudiantil.repository.AplicacionRepository;
 import org.agiles.bolsaestudiantil.repository.AplicanteRepository;
 import org.agiles.bolsaestudiantil.repository.OfertaRepository;
+import org.agiles.bolsaestudiantil.specification.AplicanteSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +34,13 @@ public class AplicanteService {
     public AplicanteEntity findById(Long id) {
         return aplicanteRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Aplicante no encontrado con id: " + id));
+    }
+
+    public Page<AplicanteEntity> obtenerAplicantes(AplicanteFilterDTO filter, Pageable pageable) {
+        return aplicanteRepository.findAll(
+                AplicanteSpecification.conFiltros(filter),
+                pageable
+        );
     }
 
     public AplicanteDTO getAplicanteDTOById(Long id) {
@@ -64,5 +76,26 @@ public class AplicanteService {
         response.setTotalAplicantes(aplicanteDTOs.size());
         
         return response;
+    }
+
+    public Void actualizarAplicante(Long id, ModAplicanteDTO aplicanteDTO) {
+        AplicanteEntity aplicante = findById(id);
+
+        // Actualizar campos permitidos
+        if (aplicanteDTO.getCarrera() != null) {
+            aplicante.setCarrera(aplicanteDTO.getCarrera());
+        }
+        if (aplicanteDTO.getAnioIngreso() != null) {
+            aplicante.setAnioIngreso(aplicanteDTO.getAnioIngreso());
+        }
+        if (aplicanteDTO.getCvUrl() != null) {
+            aplicante.setCvUrl(aplicanteDTO.getCvUrl());
+        }
+        if (aplicanteDTO.getCvFileName() != null) {
+            aplicante.setCvFileName(aplicanteDTO.getCvFileName());
+        }
+
+        aplicanteRepository.save(aplicante);
+        return null;
     }
 }

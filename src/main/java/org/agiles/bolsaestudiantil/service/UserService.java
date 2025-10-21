@@ -24,6 +24,7 @@ public class UserService {
             AplicanteEntity applicante = new AplicanteEntity();
             applicante.setNombre(event.getFirstName() + " " + event.getLastName());
             applicante.setKeycloakId(event.getKeycloakId());
+            applicante.setEmail(event.getUsername());
             userRepository.save(applicante);
         }
         if (Objects.equals(event.getRole(), "Organization")){
