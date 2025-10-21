@@ -65,3 +65,5 @@ logs/
 *.bak
 *.swp
 *~.nib
+
+.env
