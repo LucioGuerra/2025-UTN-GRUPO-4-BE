@@ -1,0 +1,68 @@
+package org.agiles.bolsaestudiantil.service;
+
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
+import org.agiles.bolsaestudiantil.dto.response.AplicanteDTO;
+import org.agiles.bolsaestudiantil.dto.response.AplicanteListaDTO;
+import org.agiles.bolsaestudiantil.entity.AplicacionEntity;
+import org.agiles.bolsaestudiantil.entity.AplicanteEntity;
+import org.agiles.bolsaestudiantil.entity.OfertaEntity;
+import org.agiles.bolsaestudiantil.mapper.AplicanteMapper;
+import org.agiles.bolsaestudiantil.repository.AplicacionRepository;
+import org.agiles.bolsaestudiantil.repository.AplicanteRepository;
+import org.agiles.bolsaestudiantil.repository.OfertaRepository;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@AllArgsConstructor
+public class AplicanteService {
+
+    private final AplicanteRepository aplicanteRepository;
+    private final AplicacionRepository aplicacionRepository;
+    private final OfertaRepository ofertaRepository;
+    private final AplicanteMapper aplicanteMapper;
+
+    public AplicanteEntity findById(Long id) {
+        return aplicanteRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Aplicante no encontrado con id: " + id));
+    }
+
+    public AplicanteDTO getAplicanteDTOById(Long id) {
+        AplicanteEntity aplicante = findById(id);
+        return aplicanteMapper.toDTO(aplicante);
+    }
+    
+    @Transactional
+    public AplicanteListaDTO getAplicantesPorOferta(Long ofertaId) {
+        // Verificar que la oferta existe
+        OfertaEntity oferta = ofertaRepository.findById(ofertaId)
+                .orElseThrow(() -> new EntityNotFoundException("Oferta no encontrada con id: " + ofertaId));
+        
+        // Obtener todas las aplicaciones de esta oferta
+        List<AplicacionEntity> aplicaciones = aplicacionRepository.findByOfertaId(ofertaId);
+        
+        // Mapear a DTOs incluyendo información de la aplicación
+        List<AplicanteDTO> aplicanteDTOs = aplicaciones.stream()
+                .map(aplicacion -> {
+                    AplicanteDTO dto = aplicanteMapper.toDTO(aplicacion.getAplicante());
+                    dto.setCartaPresentacion(aplicacion.getCartaPresentacion());
+                    dto.setFechaAplicacion(aplicacion.getFechaAplicacion());
+                    dto.setOfertaId(aplicacion.getOferta().getId());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        
+        // Construir respuesta
+        AplicanteListaDTO response = new AplicanteListaDTO();
+        response.setOfertaId(ofertaId);
+        response.setOfertaTitulo(oferta.getTitulo());
+        response.setAplicantes(aplicanteDTOs);
+        response.setTotalAplicantes(aplicanteDTOs.size());
+        
+        return response;
+    }
+}
