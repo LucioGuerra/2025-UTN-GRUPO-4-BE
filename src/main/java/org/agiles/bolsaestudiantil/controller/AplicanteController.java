@@ -5,7 +5,7 @@ import org.agiles.bolsaestudiantil.dto.request.AplicanteFilterDTO;
 import org.agiles.bolsaestudiantil.dto.request.ModAplicanteDTO;
 import org.agiles.bolsaestudiantil.dto.response.AplicanteDTO;
 import org.agiles.bolsaestudiantil.dto.response.AplicanteListaDTO;
-import org.agiles.bolsaestudiantil.service.AplicanteService;
+import org.agiles.bolsaestudiantil.service.viejo.AplicanteService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;

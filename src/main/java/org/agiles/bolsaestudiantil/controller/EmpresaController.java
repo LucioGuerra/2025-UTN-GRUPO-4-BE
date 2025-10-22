@@ -3,7 +3,7 @@ package org.agiles.bolsaestudiantil.controller;
 import lombok.RequiredArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.response.EmpresaDTO;
 import org.agiles.bolsaestudiantil.dto.response.EmpresaSimpleDTO;
-import org.agiles.bolsaestudiantil.service.EmpresaService;
+import org.agiles.bolsaestudiantil.service.viejo.EmpresaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
