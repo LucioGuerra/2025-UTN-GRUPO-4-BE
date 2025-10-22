@@ -10,11 +10,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class AttributeEntity {
+public class LanguageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    u j
+    private String name;
+
+    private Integer level;
 }

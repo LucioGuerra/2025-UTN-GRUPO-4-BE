@@ -4,8 +4,6 @@ import org.agiles.bolsaestudiantil.dto.response.AttributeDTO;
 import org.agiles.bolsaestudiantil.dto.response.OfertaListaDTO;
 import org.agiles.bolsaestudiantil.dto.request.OfertaRequestDTO;
 import org.agiles.bolsaestudiantil.dto.response.OfertaResponseDTO;
-import org.agiles.bolsaestudiantil.entity.OfertaAttributeEntity;
-import org.agiles.bolsaestudiantil.entity.OfertaEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

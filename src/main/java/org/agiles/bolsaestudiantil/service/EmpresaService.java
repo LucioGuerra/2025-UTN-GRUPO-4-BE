@@ -4,7 +4,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.response.EmpresaDTO;
 import org.agiles.bolsaestudiantil.dto.response.EmpresaSimpleDTO;
-import org.agiles.bolsaestudiantil.entity.EmpresaEntity;
 import org.agiles.bolsaestudiantil.mapper.EmpresaMapper;
 import org.agiles.bolsaestudiantil.repository.EmpresaRepository;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,5 @@
 package org.agiles.bolsaestudiantil.repository;
 
-import org.agiles.bolsaestudiantil.entity.OfertaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

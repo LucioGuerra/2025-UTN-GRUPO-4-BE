@@ -7,14 +7,28 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+@Entity
 @Getter
 @Setter
-@Entity
-public class AttributeEntity {
+public class OfferEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    u j
+    private String title;
+
+    private String description;
+
+    private String requirements;
+
+    private String modality;
+
+    private String location;
+
+    private String estimatedPayment;
+
+    public OfferEntity() {
+    }
+
 }
