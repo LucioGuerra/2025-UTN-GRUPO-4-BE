@@ -1,9 +1,9 @@
 package org.agiles.bolsaestudiantil.repository;
 
-import org.agiles.bolsaestudiantil.entity.AttributeEntity;
+import org.agiles.bolsaestudiantil.entity.OfferEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AttributeRepository extends JpaRepository<AttributeEntity, String> {
+public interface OfferRepository extends JpaRepository<OfferEntity, Long> {
 }
