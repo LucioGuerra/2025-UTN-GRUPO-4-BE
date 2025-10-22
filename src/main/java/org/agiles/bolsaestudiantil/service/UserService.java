@@ -1,8 +1,6 @@
 package org.agiles.bolsaestudiantil.service;
 
 import lombok.AllArgsConstructor;
-import org.agiles.bolsaestudiantil.entity.AplicanteEntity;
-import org.agiles.bolsaestudiantil.entity.UserEntity;
 import org.agiles.bolsaestudiantil.event.RegisterUserEvent;
 import org.agiles.bolsaestudiantil.repository.UserRepository;
 import org.springframework.context.event.EventListener;

@@ -2,7 +2,6 @@ package org.agiles.bolsaestudiantil.mapper;
 
 import org.agiles.bolsaestudiantil.dto.response.EmpresaDTO;
 import org.agiles.bolsaestudiantil.dto.response.EmpresaSimpleDTO;
-import org.agiles.bolsaestudiantil.entity.EmpresaEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

@@ -10,11 +10,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class AttributeEntity {
+public class ApplyEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    u j
+    private String customCoverLetter;
 }
