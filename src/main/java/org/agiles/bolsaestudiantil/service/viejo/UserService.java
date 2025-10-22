@@ -1,4 +1,4 @@
-package org.agiles.bolsaestudiantil.service;
+package org.agiles.bolsaestudiantil.service.viejo;
 
 import lombok.AllArgsConstructor;
 import org.agiles.bolsaestudiantil.event.RegisterUserEvent;

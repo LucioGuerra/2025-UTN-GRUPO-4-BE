@@ -7,7 +7,7 @@ import org.agiles.bolsaestudiantil.dto.request.OfertaRequestDTO;
 import org.agiles.bolsaestudiantil.dto.response.OfertaListaDTO;
 import org.agiles.bolsaestudiantil.dto.response.OfertaResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.PagedResponseDTO;
-import org.agiles.bolsaestudiantil.service.OfertaService;
+import org.agiles.bolsaestudiantil.service.viejo.OfertaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
