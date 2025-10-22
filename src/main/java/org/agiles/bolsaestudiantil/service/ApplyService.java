@@ -9,4 +9,9 @@ import org.springframework.stereotype.Service;
 public class ApplyService {
 
     private final ApplyRepository applyRepository;
+
+
+    public void createApply() {
+        // Lógica para crear una aplicación
+    }
 }

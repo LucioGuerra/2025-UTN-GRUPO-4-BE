@@ -1,14 +1,12 @@
 package org.agiles.bolsaestudiantil.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -38,8 +36,24 @@ public class StudentEntity extends UserEntity {
 
     private String coverLetter;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<ApplyEntity> applies;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<AttributeEntity> attributes;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<SubjectEntity> subjects;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<LanguageEntity> languages;
+
     public StudentEntity() {
         super();
+        this.applies = new ArrayList<>();
+        this.attributes = new ArrayList<>();
+        this.subjects = new ArrayList<>();
+        this.languages = new ArrayList<>();
     }
 
 }

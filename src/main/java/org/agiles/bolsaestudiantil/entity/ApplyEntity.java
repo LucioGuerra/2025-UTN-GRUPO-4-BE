@@ -1,9 +1,6 @@
 package org.agiles.bolsaestudiantil.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,4 +14,10 @@ public class ApplyEntity {
     private Long id;
 
     private String customCoverLetter;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private OfferEntity offer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private StudentEntity student;
 }
