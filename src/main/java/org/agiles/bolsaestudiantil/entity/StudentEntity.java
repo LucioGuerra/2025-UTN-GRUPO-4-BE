@@ -45,7 +45,7 @@ public class StudentEntity extends UserEntity {
     @OneToMany(fetch = FetchType.LAZY)
     private List<SubjectEntity> subjects;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private List<LanguageEntity> languages;
 
     public StudentEntity() {

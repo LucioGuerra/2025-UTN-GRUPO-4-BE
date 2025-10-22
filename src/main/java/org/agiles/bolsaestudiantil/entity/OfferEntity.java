@@ -31,11 +31,15 @@ public class OfferEntity {
     @OneToMany(fetch = FetchType.LAZY)
     private List<ApplyEntity> applyList;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<AttributeEntity> attributes;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity bidder;
 
     public OfferEntity() {
         this.applyList = new ArrayList<>();
+        this.attributes = new ArrayList<>();
     }
 
 }

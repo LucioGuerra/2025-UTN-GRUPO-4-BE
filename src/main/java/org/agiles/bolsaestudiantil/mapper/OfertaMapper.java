@@ -1,9 +1,9 @@
 package org.agiles.bolsaestudiantil.mapper;
 
-import org.agiles.bolsaestudiantil.dto.response.AttributeDTO;
-import org.agiles.bolsaestudiantil.dto.response.OfertaListaDTO;
-import org.agiles.bolsaestudiantil.dto.request.OfertaRequestDTO;
-import org.agiles.bolsaestudiantil.dto.response.OfertaResponseDTO;
+import org.agiles.bolsaestudiantil.dto.response.viejo.AttributeDTO;
+import org.agiles.bolsaestudiantil.dto.response.viejo.OfertaListaDTO;
+import org.agiles.bolsaestudiantil.dto.request.viejo.OfertaRequestDTO;
+import org.agiles.bolsaestudiantil.dto.response.viejo.OfertaResponseDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

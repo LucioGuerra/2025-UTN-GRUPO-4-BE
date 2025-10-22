@@ -1,7 +1,7 @@
 package org.agiles.bolsaestudiantil.specification;
 
 import jakarta.persistence.criteria.Predicate;
-import org.agiles.bolsaestudiantil.dto.request.OfertaFilterDTO;
+import org.agiles.bolsaestudiantil.dto.request.viejo.OfertaFilterDTO;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.util.ArrayList;

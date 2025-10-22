@@ -1,4 +1,4 @@
-package org.agiles.bolsaestudiantil.dto.response;
+package org.agiles.bolsaestudiantil.dto.response.viejo;
 
 import lombok.Data;
 
