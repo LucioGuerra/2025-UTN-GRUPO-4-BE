@@ -1,12 +1,12 @@
 package org.agiles.bolsaestudiantil.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.agiles.bolsaestudiantil.dto.request.AplicacionDTO;
-import org.agiles.bolsaestudiantil.dto.request.OfertaFilterDTO;
-import org.agiles.bolsaestudiantil.dto.request.OfertaRequestDTO;
-import org.agiles.bolsaestudiantil.dto.response.OfertaListaDTO;
-import org.agiles.bolsaestudiantil.dto.response.OfertaResponseDTO;
-import org.agiles.bolsaestudiantil.dto.response.PagedResponseDTO;
+import org.agiles.bolsaestudiantil.dto.request.viejo.AplicacionDTO;
+import org.agiles.bolsaestudiantil.dto.request.viejo.OfertaFilterDTO;
+import org.agiles.bolsaestudiantil.dto.request.viejo.OfertaRequestDTO;
+import org.agiles.bolsaestudiantil.dto.response.viejo.OfertaListaDTO;
+import org.agiles.bolsaestudiantil.dto.response.viejo.OfertaResponseDTO;
+import org.agiles.bolsaestudiantil.dto.response.viejo.PagedResponseDTO;
 import org.agiles.bolsaestudiantil.service.viejo.OfertaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

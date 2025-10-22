@@ -1,8 +1,6 @@
-package org.agiles.bolsaestudiantil.dto.request;
+package org.agiles.bolsaestudiantil.dto.request.viejo;
 
 import lombok.Data;
-
-import java.time.LocalDateTime;
 
 @Data
 public class ModAplicanteDTO {

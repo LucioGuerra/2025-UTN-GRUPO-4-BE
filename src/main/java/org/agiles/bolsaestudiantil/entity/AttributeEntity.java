@@ -16,5 +16,5 @@ public class AttributeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    u j
+    private String name;
 }

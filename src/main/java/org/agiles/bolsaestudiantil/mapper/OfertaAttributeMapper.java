@@ -1,6 +1,6 @@
 package org.agiles.bolsaestudiantil.mapper;
 
-import org.agiles.bolsaestudiantil.dto.response.AttributeDTO;
+import org.agiles.bolsaestudiantil.dto.response.viejo.AttributeDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
