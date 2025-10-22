@@ -1,4 +1,4 @@
-package org.agiles.bolsaestudiantil.service.viejo;
+package org.agiles.bolsaestudiantil.service;
 
 import lombok.RequiredArgsConstructor;
 import org.agiles.bolsaestudiantil.client.KeycloakClient;
