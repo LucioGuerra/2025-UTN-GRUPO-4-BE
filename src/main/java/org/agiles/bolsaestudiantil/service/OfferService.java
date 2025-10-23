@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.internal.OfferFilter;
 import org.agiles.bolsaestudiantil.dto.request.OfferRequestDTO;
 import org.agiles.bolsaestudiantil.dto.request.update.OfferUpdateRequestDTO;
+import org.agiles.bolsaestudiantil.entity.ApplyEntity;
 import org.agiles.bolsaestudiantil.dto.response.apply.ApplyForOfferResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.student.StudentSummaryResponseDTO;
 import org.agiles.bolsaestudiantil.mapper.OfferMapper;
@@ -34,24 +35,34 @@ public class OfferService {
     public OfferResponseDTO createOffer(OfferRequestDTO request) {
         OfferEntity entity = mapToEntity(request);
         OfferEntity saved = offerRepository.save(entity);
-        return offerMapper.toResponseDTO(saved);
+        OfferResponseDTO dto = offerMapper.toResponseDTO(saved);
+        dto.setApplyList(mapApplyList(saved.getApplyList()));
+        return dto;
     }
 
     public OfferResponseDTO getOfferById(Long id) {
         OfferEntity entity = getOfferEntityById(id);
-        return offerMapper.toResponseDTO(entity);
+        OfferResponseDTO dto = offerMapper.toResponseDTO(entity);
+        dto.setApplyList(mapApplyList(entity.getApplyList()));
+        return dto;
     }
 
     public Page<OfferResponseDTO> getAllOffers(OfferFilter filter, Pageable pageable) {
         Page<OfferEntity> offers = offerRepository.findAll(OfferSpecification.withFilters(filter), pageable);
-        return offers.map(offerMapper::toResponseDTO);
+        return offers.map(entity -> {
+            OfferResponseDTO dto = offerMapper.toResponseDTO(entity);
+            dto.setApplyList(mapApplyList(entity.getApplyList()));
+            return dto;
+        });
     }
 
     public OfferResponseDTO updateOffer(Long id, OfferUpdateRequestDTO request) {
         OfferEntity entity = getOfferEntityById(id);
         updateEntityFromUpdateDTO(entity, request);
         OfferEntity saved = offerRepository.save(entity);
-        return offerMapper.toResponseDTO(saved);
+        OfferResponseDTO dto = offerMapper.toResponseDTO(saved);
+        dto.setApplyList(mapApplyList(saved.getApplyList()));
+        return dto;
     }
 
     public void deleteOffer(Long id) {
@@ -109,5 +120,15 @@ public class OfferService {
         }
     }
 
-
+    private List<ApplyForOfferResponseDTO> mapApplyList(List<ApplyEntity> applies) {
+        return applies.stream()
+                .map(apply -> {
+                    ApplyForOfferResponseDTO dto = new ApplyForOfferResponseDTO();
+                    dto.setId(apply.getId());
+                    dto.setCustomCoverLetter(apply.getCustomCoverLetter());
+                    dto.setStudent(studentMapper.toSummaryDTO(apply.getStudent()));
+                    return dto;
+                })
+                .toList();
+    }
 }

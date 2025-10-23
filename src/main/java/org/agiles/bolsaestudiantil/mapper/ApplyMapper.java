@@ -7,7 +7,7 @@ import org.agiles.bolsaestudiantil.entity.ApplyEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {StudentMapper.class, OfferMapper.class})
+@Mapper(componentModel = "spring", uses = {StudentMapper.class})
 public interface ApplyMapper {
     
     @Mapping(source = "student", target = "student")
@@ -16,6 +16,6 @@ public interface ApplyMapper {
     @Mapping(source = "student", target = "student")
     ApplyForOfferResponseDTO toOfferResponseDTO(ApplyEntity entity);
     
-    @Mapping(source = "offer", target = "offer")
+    @Mapping(target = "offer", ignore = true)
     ApplyForStudentResponseDTO toStudentResponseDTO(ApplyEntity entity);
 }

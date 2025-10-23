@@ -3,6 +3,7 @@ package org.agiles.bolsaestudiantil.controller;
 import lombok.RequiredArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.internal.ApplyFilter;
 import org.agiles.bolsaestudiantil.dto.request.ApplyRequestDTO;
+import org.agiles.bolsaestudiantil.dto.request.update.ApplyUpdateRequestDTO;
 import org.agiles.bolsaestudiantil.dto.response.ApplyResponseDTO;
 import org.agiles.bolsaestudiantil.service.ApplyService;
 import org.springframework.data.domain.Page;
@@ -11,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+
 
 @RestController
 @RequestMapping("/api/applies")
@@ -41,8 +42,8 @@ public class ApplyController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApplyResponseDTO> updateApply(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
-        ApplyResponseDTO response = applyService.updateApply(id, updates);
+    public ResponseEntity<ApplyResponseDTO> updateApply(@PathVariable Long id, @RequestBody ApplyUpdateRequestDTO request) {
+        ApplyResponseDTO response = applyService.updateApply(id, request);
         return ResponseEntity.ok(response);
     }
 
