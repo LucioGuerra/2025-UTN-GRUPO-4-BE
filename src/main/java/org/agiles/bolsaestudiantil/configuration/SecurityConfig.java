@@ -13,6 +13,15 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
+
+    private static final String[] SWAGGER_WHITELIST = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/swagger-resources/**",
+            "/webjars/**"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -20,6 +29,7 @@ public class SecurityConfig {
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**", "/api/public/**").permitAll()
+                        .requestMatchers(SWAGGER_WHITELIST).permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2
