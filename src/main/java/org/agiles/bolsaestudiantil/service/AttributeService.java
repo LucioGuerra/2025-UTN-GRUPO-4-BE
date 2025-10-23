@@ -11,10 +11,13 @@ public class AttributeService {
 
     private AttributeRepository attributeRepository;
 
-    public AttributeEntity createAttribute(String name) {
-        AttributeEntity attributeEntity = new AttributeEntity();
-        attributeEntity.setName(name);
-        return attributeRepository.save(attributeEntity);
+    public AttributeEntity findOrCreateAttribute(String name) {
+        return attributeRepository.findByName(name)
+                .orElseGet(() -> {
+                    AttributeEntity attributeEntity = new AttributeEntity();
+                    attributeEntity.setName(name);
+                    return attributeRepository.save(attributeEntity);
+                });
     }
 
 

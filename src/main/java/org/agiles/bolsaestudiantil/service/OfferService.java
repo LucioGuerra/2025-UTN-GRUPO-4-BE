@@ -81,7 +81,7 @@ public class OfferService {
 
         if (request.getAttributes() != null) {
             List<AttributeEntity> attributes = request.getAttributes().stream()
-                    .map(attributeService::createAttribute)
+                    .map(attributeService::findOrCreateAttribute)
                     .toList();
             entity.setAttributes(attributes);
         }
