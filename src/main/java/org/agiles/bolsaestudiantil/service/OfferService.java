@@ -25,58 +25,70 @@ public class OfferService {
     private final AttributeService attributeService;
     private final UserService userService;
 
+    public OfferResponseDTO createOffer(OfferRequestDTO request) {
+        OfferEntity entity = mapToEntity(request);
+        OfferEntity saved = offerRepository.save(entity);
+        return mapToDTO(saved);
+    }
+
+    public OfferResponseDTO getOfferById(Long id) {
+        OfferEntity entity = getOfferEntityById(id);
+        return mapToDTO(entity);
+    }
+
+    public Page<OfferResponseDTO> getAllOffers(OfferFilter filter, Pageable pageable) {
+        Page<OfferEntity> offers = offerRepository.findAll(OfferSpecification.withFilters(filter), pageable);
+        return offers.map(this::mapToDTO);
+    }
+
+    public OfferResponseDTO updateOffer(Long id, OfferRequestDTO request) {
+        OfferEntity entity = getOfferEntityById(id);
+        updateEntityFromDTO(entity, request);
+        OfferEntity saved = offerRepository.save(entity);
+        return mapToDTO(saved);
+    }
+
+    public void deleteOffer(Long id) {
+        if (!offerRepository.existsById(id)) {
+            throw new EntityNotFoundException("Offer not found with id: " + id);
+        }
+        offerRepository.deleteById(id);
+    }
 
     public OfferEntity getOfferEntityById(Long id) {
         return offerRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Offer not found with id: " + id));
     }
 
-
-    public OfferResponseDTO createOffer(OfferRequestDTO offerRequestDTO) {
-        OfferEntity offerEntity = new OfferEntity();
-        offerEntity.setTitle(offerRequestDTO.getTitle());
-        offerEntity.setDescription(offerRequestDTO.getDescription());
-        offerEntity.setLocation(offerRequestDTO.getLocation());
-        offerEntity.setRequirements(offerRequestDTO.getRequirements());
-        offerEntity.setEstimatedPayment(offerRequestDTO.getEstimatedPayment());
-        offerEntity.setModality(offerRequestDTO.getModality());
-
-        List<AttributeEntity> attributes = offerRequestDTO.getAttributes().stream()
-                .map(attributeService::createAttribute)
-                .toList();
-
-        UserEntity bidder = userService.getUserById(offerRequestDTO.getBidderId());
-        offerEntity.setBidder(bidder);
-
-        offerEntity.setAttributes(attributes);
-
-
-        OfferEntity savedOffer = offerRepository.save(offerEntity);
-
-        return new OfferResponseDTO(
-                savedOffer.getId(),
-                savedOffer.getTitle(),
-                savedOffer.getDescription(),
-                savedOffer.getLocation(),
-                savedOffer.getEstimatedPayment(),
-                savedOffer.getRequirements(),
-                savedOffer.getModality(),
-                null,
-                userService.userToDTO(savedOffer.getBidder())
-        );
+    private OfferEntity mapToEntity(OfferRequestDTO request) {
+        OfferEntity entity = new OfferEntity();
+        updateEntityFromDTO(entity, request);
+        return entity;
     }
 
-    public Page<OfferResponseDTO> getAllOffers(OfferFilter filter, Pageable pageable) {
-        Page<OfferEntity> offers = offerRepository.findAll(OfferSpecification.withFilters(filter), pageable);
-        return offers.map(this::offerToDTO);
-    }
+    private void updateEntityFromDTO(OfferEntity entity, OfferRequestDTO request) {
+        entity.setTitle(request.getTitle());
+        entity.setDescription(request.getDescription());
+        entity.setRequirements(request.getRequirements());
+        entity.setModality(request.getModality());
+        entity.setLocation(request.getLocation());
+        entity.setEstimatedPayment(request.getEstimatedPayment());
 
-    public OfferResponseDTO offerToDTO(OfferEntity offerEntity) {
-        if (offerEntity == null) {
-            return null;
+        if (request.getBidderId() != null) {
+            UserEntity bidder = userService.getUserById(request.getBidderId());
+            entity.setBidder(bidder);
         }
 
-        List<ApplyResponseDTO> applyDTOs = offerEntity.getApplyList().stream()
+        if (request.getAttributes() != null) {
+            List<AttributeEntity> attributes = request.getAttributes().stream()
+                    .map(attributeService::createAttribute)
+                    .toList();
+            entity.setAttributes(attributes);
+        }
+    }
+
+    private OfferResponseDTO mapToDTO(OfferEntity entity) {
+        List<ApplyResponseDTO> applyDTOs = entity.getApplyList().stream()
                 .map(apply -> {
                     ApplyResponseDTO dto = new ApplyResponseDTO();
                     dto.setCustomCoverLetter(apply.getCustomCoverLetter());
@@ -86,16 +98,15 @@ public class OfferService {
                 .toList();
 
         return new OfferResponseDTO(
-                offerEntity.getId(),
-                offerEntity.getTitle(),
-                offerEntity.getDescription(),
-                offerEntity.getLocation(),
-                offerEntity.getEstimatedPayment(),
-                offerEntity.getRequirements(),
-                offerEntity.getModality(),
+                entity.getId(),
+                entity.getTitle(),
+                entity.getDescription(),
+                entity.getLocation(),
+                entity.getEstimatedPayment(),
+                entity.getRequirements(),
+                entity.getModality(),
                 applyDTOs,
-                userService.userToDTO(offerEntity.getBidder())
+                userService.userToDTO(entity.getBidder())
         );
     }
-
 }
