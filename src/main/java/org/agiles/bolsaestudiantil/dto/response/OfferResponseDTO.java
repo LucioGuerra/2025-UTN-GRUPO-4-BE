@@ -1,9 +1,7 @@
 package org.agiles.bolsaestudiantil.dto.response;
 
-import jakarta.persistence.*;
 import lombok.Data;
-import org.agiles.bolsaestudiantil.entity.ApplyEntity;
-import org.agiles.bolsaestudiantil.entity.UserEntity;
+import org.agiles.bolsaestudiantil.dto.response.apply.ApplyForOfferResponseDTO;
 
 import java.util.List;
 
@@ -23,19 +21,9 @@ public class OfferResponseDTO {
 
     private String estimatedPayment;
 
-    private List<ApplyResponseDTO> applyList;
+    private List<ApplyForOfferResponseDTO> applyList;
 
     private UserResponseDTO bidder;
 
-    public OfferResponseDTO(Long id, String title, String description, String location, String estimatedPayment, String requirements, String modality, List<ApplyResponseDTO> applyList, UserResponseDTO bidder) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.location = location;
-        this.estimatedPayment = estimatedPayment;
-        this.requirements = requirements;
-        this.modality = modality;
-        this.applyList = applyList;
-        this.bidder = bidder;
-    }
+
 }

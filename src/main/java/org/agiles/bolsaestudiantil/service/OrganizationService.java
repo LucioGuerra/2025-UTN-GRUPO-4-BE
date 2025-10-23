@@ -2,16 +2,14 @@ package org.agiles.bolsaestudiantil.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.agiles.bolsaestudiantil.dto.request.update.OrganizationUpdateRequestDTO;
 import org.agiles.bolsaestudiantil.dto.response.OrganizationResponseDTO;
 import org.agiles.bolsaestudiantil.entity.OrganizationEntity;
-import org.agiles.bolsaestudiantil.enums.Size;
 import org.agiles.bolsaestudiantil.event.RegisterUserEvent;
 import org.agiles.bolsaestudiantil.repository.OrganizationRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -30,9 +28,9 @@ public class OrganizationService {
         return mapToOrganizationDTO(entity);
     }
 
-    public OrganizationResponseDTO updateOrganization(Long id, Map<String, Object> updates) {
+    public OrganizationResponseDTO updateOrganization(Long id, OrganizationUpdateRequestDTO request) {
         OrganizationEntity entity = getOrganizationEntityById(id);
-        updateEntityFromMap(entity, updates);
+        updateEntityFromDTO(entity, request);
         OrganizationEntity saved = organizationRepository.save(entity);
         return mapToOrganizationDTO(saved);
     }
@@ -44,23 +42,17 @@ public class OrganizationService {
         organizationRepository.deleteById(id);
     }
 
-    private void updateEntityFromMap(OrganizationEntity entity, Map<String, Object> updates) {
-        updates.forEach((key, value) -> {
-            if (value != null) {
-                switch (key) {
-                    case "name" -> entity.setName((String) value);
-                    case "surname" -> entity.setSurname((String) value);
-                    case "email" -> entity.setEmail((String) value);
-                    case "phone" -> entity.setPhone((String) value);
-                    case "location" -> entity.setLocation((String) value);
-                    case "description" -> entity.setDescription((String) value);
-                    case "linkedinUrl" -> entity.setLinkedinUrl((String) value);
-                    case "webSiteUrl" -> entity.setWebSiteUrl((String) value);
-                    case "industry" -> entity.setIndustry((String) value);
-                    case "size" -> entity.setSize(Size.valueOf((String) value));
-                }
-            }
-        });
+    private void updateEntityFromDTO(OrganizationEntity entity, OrganizationUpdateRequestDTO request) {
+        if (request.getName() != null) entity.setName(request.getName());
+        if (request.getSurname() != null) entity.setSurname(request.getSurname());
+        if (request.getEmail() != null) entity.setEmail(request.getEmail());
+        if (request.getPhone() != null) entity.setPhone(request.getPhone());
+        if (request.getLocation() != null) entity.setLocation(request.getLocation());
+        if (request.getDescription() != null) entity.setDescription(request.getDescription());
+        if (request.getLinkedinUrl() != null) entity.setLinkedinUrl(request.getLinkedinUrl());
+        if (request.getWebSiteUrl() != null) entity.setWebSiteUrl(request.getWebSiteUrl());
+        if (request.getIndustry() != null) entity.setIndustry(request.getIndustry());
+        if (request.getSize() != null) entity.setSize(request.getSize());
     }
 
     private OrganizationResponseDTO mapToOrganizationDTO(OrganizationEntity entity) {

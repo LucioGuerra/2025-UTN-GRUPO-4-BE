@@ -3,6 +3,7 @@ package org.agiles.bolsaestudiantil.controller;
 import lombok.RequiredArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.internal.OfferFilter;
 import org.agiles.bolsaestudiantil.dto.request.OfferRequestDTO;
+import org.agiles.bolsaestudiantil.dto.request.update.OfferUpdateRequestDTO;
 import org.agiles.bolsaestudiantil.dto.response.OfferResponseDTO;
 import org.agiles.bolsaestudiantil.service.OfferService;
 import org.springframework.data.domain.Page;
@@ -55,7 +56,7 @@ public class OfferController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<OfferResponseDTO> updateOffer(@PathVariable Long id, @RequestBody OfferRequestDTO request) {
+    public ResponseEntity<OfferResponseDTO> updateOffer(@PathVariable Long id, @RequestBody OfferUpdateRequestDTO request) {
         OfferResponseDTO response = offerService.updateOffer(id, request);
         return ResponseEntity.ok(response);
     }

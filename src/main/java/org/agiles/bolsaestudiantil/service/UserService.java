@@ -5,6 +5,7 @@ import org.agiles.bolsaestudiantil.dto.response.LanguageResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.OrganizationResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.StudentResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.UserResponseDTO;
+import org.agiles.bolsaestudiantil.dto.response.organization.OrganizationSummaryResponseDTO;
 import org.agiles.bolsaestudiantil.entity.OrganizationEntity;
 import org.agiles.bolsaestudiantil.entity.StudentEntity;
 import org.agiles.bolsaestudiantil.entity.UserEntity;
@@ -129,6 +130,17 @@ public class UserService {
         dto.setWebSiteUrl(entity.getWebSiteUrl());
         dto.setIndustry(entity.getIndustry());
         dto.setSize(entity.getSize());
+        return dto;
+    }
+
+    public OrganizationSummaryResponseDTO mapToOrganizationSummary(OrganizationEntity entity) {
+        OrganizationSummaryResponseDTO dto = new OrganizationSummaryResponseDTO();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        dto.setSurname(entity.getSurname());
+        dto.setEmail(entity.getEmail());
+        dto.setIndustry(entity.getIndustry());
+        dto.setLocation(entity.getLocation());
         return dto;
     }
 

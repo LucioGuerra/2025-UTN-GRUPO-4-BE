@@ -4,7 +4,9 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.internal.OfferFilter;
 import org.agiles.bolsaestudiantil.dto.request.OfferRequestDTO;
-import org.agiles.bolsaestudiantil.dto.response.ApplyResponseDTO;
+import org.agiles.bolsaestudiantil.dto.request.update.OfferUpdateRequestDTO;
+import org.agiles.bolsaestudiantil.dto.response.apply.ApplyForOfferResponseDTO;
+import org.agiles.bolsaestudiantil.dto.response.student.StudentSummaryResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.OfferResponseDTO;
 import org.agiles.bolsaestudiantil.entity.AttributeEntity;
 import org.agiles.bolsaestudiantil.entity.OfferEntity;
@@ -41,9 +43,9 @@ public class OfferService {
         return offers.map(this::mapToDTO);
     }
 
-    public OfferResponseDTO updateOffer(Long id, OfferRequestDTO request) {
+    public OfferResponseDTO updateOffer(Long id, OfferUpdateRequestDTO request) {
         OfferEntity entity = getOfferEntityById(id);
-        updateEntityFromDTO(entity, request);
+        updateEntityFromUpdateDTO(entity, request);
         OfferEntity saved = offerRepository.save(entity);
         return mapToDTO(saved);
     }
@@ -87,26 +89,56 @@ public class OfferService {
         }
     }
 
+    private void updateEntityFromUpdateDTO(OfferEntity entity, OfferUpdateRequestDTO request) {
+        if (request.getTitle() != null) entity.setTitle(request.getTitle());
+        if (request.getDescription() != null) entity.setDescription(request.getDescription());
+        if (request.getRequirements() != null) entity.setRequirements(request.getRequirements());
+        if (request.getModality() != null) entity.setModality(request.getModality());
+        if (request.getLocation() != null) entity.setLocation(request.getLocation());
+        if (request.getEstimatedPayment() != null) entity.setEstimatedPayment(request.getEstimatedPayment());
+        
+        if (request.getAttributes() != null) {
+            List<AttributeEntity> attributes = request.getAttributes().stream()
+                    .map(attributeService::findOrCreateAttribute)
+                    .toList();
+            entity.setAttributes(attributes);
+        }
+    }
+
     private OfferResponseDTO mapToDTO(OfferEntity entity) {
-        List<ApplyResponseDTO> applyDTOs = entity.getApplyList().stream()
-                .map(apply -> {
-                    ApplyResponseDTO dto = new ApplyResponseDTO();
-                    dto.setCustomCoverLetter(apply.getCustomCoverLetter());
-                    dto.setStudent(userService.mapToStudentDTO(apply.getStudent()));
-                    return dto;
-                })
+        List<ApplyForOfferResponseDTO> applyDTOs = entity.getApplyList().stream()
+                .map(this::mapToOfferApplyDTO)
                 .toList();
 
-        return new OfferResponseDTO(
-                entity.getId(),
-                entity.getTitle(),
-                entity.getDescription(),
-                entity.getLocation(),
-                entity.getEstimatedPayment(),
-                entity.getRequirements(),
-                entity.getModality(),
-                applyDTOs,
-                userService.userToDTO(entity.getBidder())
-        );
+        OfferResponseDTO dto = new OfferResponseDTO();
+        dto.setId(entity.getId());
+        dto.setTitle(entity.getTitle());
+        dto.setDescription(entity.getDescription());
+        dto.setLocation(entity.getLocation());
+        dto.setEstimatedPayment(entity.getEstimatedPayment());
+        dto.setRequirements(entity.getRequirements());
+        dto.setModality(entity.getModality());
+        dto.setApplyList(applyDTOs);
+        dto.setBidder(userService.userToDTO(entity.getBidder()));
+        return dto;
+    }
+
+    private ApplyForOfferResponseDTO mapToOfferApplyDTO(ApplyEntity apply) {
+        ApplyForOfferResponseDTO dto = new ApplyForOfferResponseDTO();
+        dto.setId(apply.getId());
+        dto.setCustomCoverLetter(apply.getCustomCoverLetter());
+        dto.setStudent(mapToStudentSummary(apply.getStudent()));
+        return dto;
+    }
+
+    private StudentSummaryResponseDTO mapToStudentSummary(StudentEntity entity) {
+        StudentSummaryResponseDTO dto = new StudentSummaryResponseDTO();
+        dto.setId(entity.getId());
+        dto.setName(entity.getName());
+        dto.setSurname(entity.getSurname());
+        dto.setEmail(entity.getEmail());
+        dto.setCareer(entity.getCareer());
+        dto.setInstitution(entity.getInstitution());
+        return dto;
     }
 }

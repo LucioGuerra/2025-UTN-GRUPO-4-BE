@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.internal.ApplyFilter;
 import org.agiles.bolsaestudiantil.dto.request.ApplyRequestDTO;
+import org.agiles.bolsaestudiantil.dto.request.update.ApplyUpdateRequestDTO;
 import org.agiles.bolsaestudiantil.dto.response.ApplyResponseDTO;
 import org.agiles.bolsaestudiantil.entity.ApplyEntity;
 import org.agiles.bolsaestudiantil.entity.OfferEntity;
@@ -13,8 +14,6 @@ import org.agiles.bolsaestudiantil.specification.ApplySpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service
 @AllArgsConstructor
@@ -45,10 +44,10 @@ public class ApplyService {
         return applies.map(this::mapToDTO);
     }
 
-    public ApplyResponseDTO updateApply(Long id, Map<String, Object> updates) {
+    public ApplyResponseDTO updateApply(Long id, ApplyUpdateRequestDTO request) {
         ApplyEntity entity = getApplyEntityById(id);
-        if (updates.containsKey("customCoverLetter")) {
-            entity.setCustomCoverLetter((String) updates.get("customCoverLetter"));
+        if (request.getCustomCoverLetter() != null) {
+            entity.setCustomCoverLetter(request.getCustomCoverLetter());
         }
         ApplyEntity saved = applyRepository.save(entity);
         return mapToDTO(saved);
