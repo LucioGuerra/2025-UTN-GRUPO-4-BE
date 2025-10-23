@@ -5,10 +5,6 @@ pipeline {
         DEPLOY_DIR = '/opt/publico/agiles/backend/2025-UTN-GRUPO-4-BE'  // ruta en tu servidor donde vive el repo
     }
 
-    triggers {
-        // Este trigger se activa cuando GitHub envía un webhook (push)
-        // El "GitHub hook trigger for GITScm polling" debe estar tildado en la UI del job
-    }
 
     stages {
         stage('Deploy') {
