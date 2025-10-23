@@ -25,4 +25,6 @@ public class UserResponseDTO {
     private String imageUrl;
 
     private String linkedinUrl;
+
+    private String role;
 }
