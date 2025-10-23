@@ -2,6 +2,7 @@ package org.agiles.bolsaestudiantil.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.agiles.bolsaestudiantil.dto.internal.OfferFilter;
 import org.agiles.bolsaestudiantil.dto.request.OfferRequestDTO;
 import org.agiles.bolsaestudiantil.dto.response.ApplyResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.OfferResponseDTO;
@@ -9,6 +10,9 @@ import org.agiles.bolsaestudiantil.entity.AttributeEntity;
 import org.agiles.bolsaestudiantil.entity.OfferEntity;
 import org.agiles.bolsaestudiantil.entity.UserEntity;
 import org.agiles.bolsaestudiantil.repository.OfferRepository;
+import org.agiles.bolsaestudiantil.specification.OfferSpecification;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,6 +64,38 @@ public class OfferService {
                 null,
                 userService.userToDTO(savedOffer.getBidder())
         );
-
     }
+
+    public Page<OfferResponseDTO> getAllOffers(OfferFilter filter, Pageable pageable) {
+        Page<OfferEntity> offers = offerRepository.findAll(OfferSpecification.withFilters(filter), pageable);
+        return offers.map(this::offerToDTO);
+    }
+
+    public OfferResponseDTO offerToDTO(OfferEntity offerEntity) {
+        if (offerEntity == null) {
+            return null;
+        }
+
+        List<ApplyResponseDTO> applyDTOs = offerEntity.getApplyList().stream()
+                .map(apply -> {
+                    ApplyResponseDTO dto = new ApplyResponseDTO();
+                    dto.setCustomCoverLetter(apply.getCustomCoverLetter());
+                    dto.setStudent(userService.mapToStudentDTO(apply.getStudent()));
+                    return dto;
+                })
+                .toList();
+
+        return new OfferResponseDTO(
+                offerEntity.getId(),
+                offerEntity.getTitle(),
+                offerEntity.getDescription(),
+                offerEntity.getLocation(),
+                offerEntity.getEstimatedPayment(),
+                offerEntity.getRequirements(),
+                offerEntity.getModality(),
+                applyDTOs,
+                userService.userToDTO(offerEntity.getBidder())
+        );
+    }
+
 }

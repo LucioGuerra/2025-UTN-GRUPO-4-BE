@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 public class OfferEntity {
 
-    @Id
+     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
