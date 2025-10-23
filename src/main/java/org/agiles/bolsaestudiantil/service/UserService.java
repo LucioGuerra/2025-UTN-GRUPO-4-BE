@@ -27,6 +27,14 @@ public class UserService {
         return user;
     }
 
+    public UserResponseDTO getUserByKeycloakId(String keycloakId) {
+        UserEntity user = studentRepository.findByKeycloakId(keycloakId).orElse(null);
+        if (user == null) {
+            user = organizationRepository.findByKeycloakId(keycloakId).orElse(null);
+        }
+        return getUserDTOById(user != null ? user.getId() : null);
+    }
+
     public UserResponseDTO userToDTO(UserEntity userEntity) {
         if (userEntity == null) {
             return null;
@@ -42,6 +50,7 @@ public class UserService {
         dto.setSurname(userEntity.getSurname());
         dto.setImageUrl(userEntity.getImageUrl());
         dto.setLinkedinUrl(userEntity.getLinkedinUrl());
+        dto.setRole(userEntity instanceof StudentEntity ? "Student" : "Organization");
 
         return dto;
     }
@@ -72,6 +81,7 @@ public class UserService {
         dto.setSurname(entity.getSurname());
         dto.setImageUrl(entity.getImageUrl());
         dto.setLinkedinUrl(entity.getLinkedinUrl());
+        dto.setRole("Student");
 
         dto.setGithubUrl(entity.getGithubUrl());
         dto.setCareer(entity.getCareer());
@@ -97,6 +107,7 @@ public class UserService {
         dto.setSurname(entity.getSurname());
         dto.setImageUrl(entity.getImageUrl());
         dto.setLinkedinUrl(entity.getLinkedinUrl());
+        dto.setRole("Organization");
 
         dto.setWebSiteUrl(entity.getWebSiteUrl());
         dto.setIndustry(entity.getIndustry());
@@ -115,6 +126,7 @@ public class UserService {
         dto.setSurname(entity.getSurname());
         dto.setImageUrl(entity.getImageUrl());
         dto.setLinkedinUrl(entity.getLinkedinUrl());
+        dto.setRole(entity instanceof StudentEntity ? "Student" : "Organization");
         return dto;
     }
 }
