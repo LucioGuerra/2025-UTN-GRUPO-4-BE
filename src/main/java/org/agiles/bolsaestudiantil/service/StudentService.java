@@ -3,6 +3,7 @@ package org.agiles.bolsaestudiantil.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.response.StudentResponseDTO;
+import org.agiles.bolsaestudiantil.entity.AttributeEntity;
 import org.agiles.bolsaestudiantil.entity.StudentEntity;
 import org.agiles.bolsaestudiantil.event.RegisterUserEvent;
 import org.agiles.bolsaestudiantil.repository.StudentRepository;
@@ -10,6 +11,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -18,6 +20,7 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
     private final UserService userService;
+    private final AttributeService attributeService;
 
     public StudentEntity getStudentEntityById(Long id) {
         return studentRepository.findById(id)
@@ -59,6 +62,14 @@ public class StudentService {
                     case "currentYearLevel" -> entity.setCurrentYearLevel((Integer) value);
                     case "institution" -> entity.setInstitution((String) value);
                     case "coverLetter" -> entity.setCoverLetter((String) value);
+                    case "attributes" -> {
+                        if (value instanceof List<?> attributeNames) {
+                            List<AttributeEntity> attributes = attributeNames.stream()
+                                    .map(name -> attributeService.findOrCreateAttribute((String) name))
+                                    .toList();
+                            entity.setAttributes(attributes);
+                        }
+                    }
                 }
             }
         });
