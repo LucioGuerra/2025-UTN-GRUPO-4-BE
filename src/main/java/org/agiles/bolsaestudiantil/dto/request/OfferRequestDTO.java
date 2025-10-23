@@ -39,3 +39,4 @@ public class OfferRequestDTO {
     private Long bidderId;
 }
 
+// Purbea de jenkinsfile
