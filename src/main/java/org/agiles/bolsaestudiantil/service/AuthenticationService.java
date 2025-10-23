@@ -94,6 +94,17 @@ public class AuthenticationService {
 
         keycloakClient.assignRole(adminToken, realm, userId, List.of(role));
 
-        publisher.publishEvent(new RegisterUserEvent(request.getFirstName(), request.getLastName(), request.getUsername(), userId, request.getRole()));
+        publisher.publishEvent(new RegisterUserEvent(
+                request.getFirstName(), 
+                request.getLastName(), 
+                request.getUsername(), 
+                request.getEmail(),
+                userId, 
+                request.getRole(),
+                request.getPhone(),
+                request.getLocation(),
+                request.getDescription(),
+                request.getLinkedinUrl()
+        ));
     }
 }
