@@ -36,16 +36,19 @@ public class StudentEntity extends UserEntity {
 
     private String coverLetter;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)
     private List<ApplyEntity> applies;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "student_attributes")
     private List<AttributeEntity> attributes;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "student_subjects")
     private List<SubjectEntity> subjects;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "student_id")
     private List<LanguageEntity> languages;
 
     public StudentEntity() {

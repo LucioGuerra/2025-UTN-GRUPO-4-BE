@@ -28,10 +28,11 @@ public class OfferEntity {
 
     private String estimatedPayment;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "offer", fetch = FetchType.LAZY)
     private List<ApplyEntity> applyList;
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "offer_attributes")
     private List<AttributeEntity> attributes;
 
     @ManyToOne(fetch = FetchType.LAZY)
