@@ -1,12 +1,11 @@
 package org.agiles.bolsaestudiantil.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.agiles.bolsaestudiantil.dto.request.update.OrganizationUpdateRequestDTO;
 import org.agiles.bolsaestudiantil.dto.response.OrganizationResponseDTO;
 import org.agiles.bolsaestudiantil.service.OrganizationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/organizations")
@@ -22,8 +21,8 @@ public class OrganizationController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<OrganizationResponseDTO> updateOrganization(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
-        OrganizationResponseDTO response = organizationService.updateOrganization(id, updates);
+    public ResponseEntity<OrganizationResponseDTO> updateOrganization(@PathVariable Long id, @RequestBody OrganizationUpdateRequestDTO request) {
+        OrganizationResponseDTO response = organizationService.updateOrganization(id, request);
         return ResponseEntity.ok(response);
     }
 

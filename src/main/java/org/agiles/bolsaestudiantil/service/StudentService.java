@@ -2,6 +2,7 @@ package org.agiles.bolsaestudiantil.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.agiles.bolsaestudiantil.dto.request.update.StudentUpdateRequestDTO;
 import org.agiles.bolsaestudiantil.dto.response.StudentResponseDTO;
 import org.agiles.bolsaestudiantil.entity.AttributeEntity;
 import org.agiles.bolsaestudiantil.entity.LanguageEntity;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -35,9 +35,9 @@ public class StudentService {
         return userService.mapToStudentDTO(entity);
     }
 
-    public StudentResponseDTO updateStudent(Long id, Map<String, Object> updates) {
+    public StudentResponseDTO updateStudent(Long id, StudentUpdateRequestDTO request) {
         StudentEntity entity = getStudentEntityById(id);
-        updateEntityFromMap(entity, updates);
+        updateEntityFromDTO(entity, request);
         StudentEntity saved = studentRepository.save(entity);
         return userService.mapToStudentDTO(saved);
     }
@@ -56,60 +56,54 @@ public class StudentService {
         languageService.deleteLanguage(languageId);
     }
 
+    private void updateEntityFromDTO(StudentEntity entity, StudentUpdateRequestDTO request) {
+        if (request.getName() != null) entity.setName(request.getName());
+        if (request.getSurname() != null) entity.setSurname(request.getSurname());
+        if (request.getEmail() != null) entity.setEmail(request.getEmail());
+        if (request.getPhone() != null) entity.setPhone(request.getPhone());
+        if (request.getLocation() != null) entity.setLocation(request.getLocation());
+        if (request.getDescription() != null) entity.setDescription(request.getDescription());
+        if (request.getLinkedinUrl() != null) entity.setLinkedinUrl(request.getLinkedinUrl());
+        if (request.getGithubUrl() != null) entity.setGithubUrl(request.getGithubUrl());
+        if (request.getCareer() != null) entity.setCareer(request.getCareer());
+        if (request.getCurrentYearLevel() != null) entity.setCurrentYearLevel(request.getCurrentYearLevel());
+        if (request.getInstitution() != null) entity.setInstitution(request.getInstitution());
+        if (request.getSkills() != null) entity.setSkills(request.getSkills());
+        if (request.getIncomeDate() != null) entity.setIncomeDate(request.getIncomeDate());
+        if (request.getDateOfBirth() != null) entity.setDateOfBirth(request.getDateOfBirth());
+        if (request.getCvUrl() != null) entity.setCvUrl(request.getCvUrl());
+        if (request.getCvFileName() != null) entity.setCvFileName(request.getCvFileName());
+        if (request.getCoverLetter() != null) entity.setCoverLetter(request.getCoverLetter());
+        
+        if (request.getAttributes() != null) {
+            List<AttributeEntity> attributes = request.getAttributes().stream()
+                    .map(attributeService::findOrCreateAttribute)
+                    .toList();
+            entity.setAttributes(attributes);
+        }
+        
+        if (request.getLanguages() != null) {
+            List<LanguageEntity> languages = request.getLanguages().stream()
+                    .map(langReq -> {
+                        LanguageEntity existing = entity.getLanguages().stream()
+                                .filter(lang -> lang.getName().equals(langReq.getName()))
+                                .findFirst()
+                                .orElse(null);
+                        
+                        if (existing != null) {
+                            existing.setLevel(langReq.getLevel());
+                            return existing;
+                        } else {
+                            return languageService.createLanguage(langReq.getName(), langReq.getLevel());
+                        }
+                    })
+                    .toList();
+            entity.setLanguages(languages);
+        }
+    }
+
     private void updateEntityFromMap(StudentEntity entity, Map<String, Object> updates) {
-        updates.forEach((key, value) -> {
-            if (value != null) {
-                switch (key) {
-                    case "name" -> entity.setName((String) value);
-                    case "surname" -> entity.setSurname((String) value);
-                    case "email" -> entity.setEmail((String) value);
-                    case "phone" -> entity.setPhone((String) value);
-                    case "location" -> entity.setLocation((String) value);
-                    case "description" -> entity.setDescription((String) value);
-                    case "linkedinUrl" -> entity.setLinkedinUrl((String) value);
-                    case "githubUrl" -> entity.setGithubUrl((String) value);
-                    case "career" -> entity.setCareer((String) value);
-                    case "currentYearLevel" -> entity.setCurrentYearLevel((Integer) value);
-                    case "institution" -> entity.setInstitution((String) value);
-                    case "coverLetter" -> entity.setCoverLetter((String) value);
-                    case "attributes" -> {
-                        if (value instanceof List<?> attributeNames) {
-                            List<AttributeEntity> attributes = attributeNames.stream()
-                                    .map(name -> attributeService.findOrCreateAttribute((String) name))
-                                    .toList();
-                            entity.setAttributes(attributes);
-                        }
-                    }
-                    case "languages" -> {
-                        if (value instanceof List<?> languageRequests) {
-                            List<LanguageEntity> languages = languageRequests.stream()
-                                    .map(langReq -> {
-                                        if (langReq instanceof Map<?, ?> langMap) {
-                                            String name = (String) langMap.get("name");
-                                            Integer level = (Integer) langMap.get("level");
-                                            
-                                            LanguageEntity existing = entity.getLanguages().stream()
-                                                    .filter(lang -> lang.getName().equals(name))
-                                                    .findFirst()
-                                                    .orElse(null);
-                                            
-                                            if (existing != null) {
-                                                existing.setLevel(level);
-                                                return existing;
-                                            } else {
-                                                return languageService.createLanguage(name, level);
-                                            }
-                                        }
-                                        return null;
-                                    })
-                                    .filter(Objects::nonNull)
-                                    .toList();
-                            entity.setLanguages(languages);
-                        }
-                    }
-                }
-            }
-        });
+        // Deprecated - use updateEntityFromDTO instead
     }
 
     @Async
