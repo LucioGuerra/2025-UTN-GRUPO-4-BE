@@ -8,6 +8,7 @@ import org.agiles.bolsaestudiantil.entity.AttributeEntity;
 import org.agiles.bolsaestudiantil.entity.LanguageEntity;
 import org.agiles.bolsaestudiantil.entity.StudentEntity;
 import org.agiles.bolsaestudiantil.event.RegisterUserEvent;
+import org.agiles.bolsaestudiantil.mapper.StudentMapper;
 import org.agiles.bolsaestudiantil.repository.StudentRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -24,6 +25,7 @@ public class StudentService {
     private final UserService userService;
     private final AttributeService attributeService;
     private final LanguageService languageService;
+    private final StudentMapper studentMapper;
 
     public StudentEntity getStudentEntityById(Long id) {
         return studentRepository.findById(id)
@@ -32,14 +34,14 @@ public class StudentService {
 
     public StudentResponseDTO getStudentById(Long id) {
         StudentEntity entity = getStudentEntityById(id);
-        return userService.mapToStudentDTO(entity);
+        return studentMapper.toResponseDTO(entity);
     }
 
     public StudentResponseDTO updateStudent(Long id, StudentUpdateRequestDTO request) {
         StudentEntity entity = getStudentEntityById(id);
         updateEntityFromDTO(entity, request);
         StudentEntity saved = studentRepository.save(entity);
-        return userService.mapToStudentDTO(saved);
+        return studentMapper.toResponseDTO(saved);
     }
 
     public void deleteStudent(Long id) {

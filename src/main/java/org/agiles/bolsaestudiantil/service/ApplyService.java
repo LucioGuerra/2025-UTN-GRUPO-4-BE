@@ -10,6 +10,9 @@ import org.agiles.bolsaestudiantil.entity.ApplyEntity;
 import org.agiles.bolsaestudiantil.entity.OfferEntity;
 import org.agiles.bolsaestudiantil.entity.StudentEntity;
 import org.agiles.bolsaestudiantil.repository.ApplyRepository;
+import org.agiles.bolsaestudiantil.mapper.ApplyMapper;
+import org.agiles.bolsaestudiantil.mapper.OfferMapper;
+import org.agiles.bolsaestudiantil.mapper.StudentMapper;
 import org.agiles.bolsaestudiantil.specification.ApplySpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +26,9 @@ public class ApplyService {
     private final StudentService studentService;
     private final OfferService offerService;
     private final UserService userService;
+    private final ApplyMapper applyMapper;
+    private final OfferMapper offerMapper;
+    private final StudentMapper studentMapper;
 
     public ApplyResponseDTO createApply(ApplyRequestDTO request) {
         ApplyEntity apply = new ApplyEntity();
@@ -36,12 +42,12 @@ public class ApplyService {
         apply.setCustomCoverLetter(request.getCustomCoverLetter());
         
         ApplyEntity saved = applyRepository.save(apply);
-        return mapToDTO(saved);
+        return applyMapper.toResponseDTO(saved);
     }
 
     public Page<ApplyResponseDTO> getAllApplies(ApplyFilter filter, Pageable pageable) {
         Page<ApplyEntity> applies = applyRepository.findAll(ApplySpecification.withFilters(filter), pageable);
-        return applies.map(this::mapToDTO);
+        return applies.map(applyMapper::toResponseDTO);
     }
 
     public ApplyResponseDTO updateApply(Long id, ApplyUpdateRequestDTO request) {
@@ -50,7 +56,7 @@ public class ApplyService {
             entity.setCustomCoverLetter(request.getCustomCoverLetter());
         }
         ApplyEntity saved = applyRepository.save(entity);
-        return mapToDTO(saved);
+        return applyMapper.toResponseDTO(saved);
     }
 
     public void deleteApply(Long id) {
@@ -65,10 +71,5 @@ public class ApplyService {
                 .orElseThrow(() -> new EntityNotFoundException("Apply not found with id: " + id));
     }
 
-    private ApplyResponseDTO mapToDTO(ApplyEntity entity) {
-        ApplyResponseDTO dto = new ApplyResponseDTO();
-        dto.setCustomCoverLetter(entity.getCustomCoverLetter());
-        dto.setStudent(userService.mapToStudentDTO(entity.getStudent()));
-        return dto;
-    }
+
 }

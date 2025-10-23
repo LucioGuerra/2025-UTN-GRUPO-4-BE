@@ -6,6 +6,9 @@ import org.agiles.bolsaestudiantil.dto.response.OrganizationResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.StudentResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.UserResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.organization.OrganizationSummaryResponseDTO;
+import org.agiles.bolsaestudiantil.mapper.OrganizationMapper;
+import org.agiles.bolsaestudiantil.mapper.StudentMapper;
+import org.agiles.bolsaestudiantil.mapper.UserMapper;
 import org.agiles.bolsaestudiantil.entity.OrganizationEntity;
 import org.agiles.bolsaestudiantil.entity.StudentEntity;
 import org.agiles.bolsaestudiantil.entity.UserEntity;
@@ -21,6 +24,9 @@ public class UserService {
 
     private final StudentRepository studentRepository;
     private final OrganizationRepository organizationRepository;
+    private final StudentMapper studentMapper;
+    private final OrganizationMapper organizationMapper;
+    private final UserMapper userMapper;
 
 
     public UserEntity getUserById(Long id) {
@@ -43,20 +49,7 @@ public class UserService {
         if (userEntity == null) {
             return null;
         }
-
-        UserResponseDTO dto = new UserResponseDTO();
-        dto.setId(userEntity.getId());
-        dto.setDescription(userEntity.getDescription());
-        dto.setPhone(userEntity.getPhone());
-        dto.setEmail(userEntity.getEmail());
-        dto.setLocation(userEntity.getLocation());
-        dto.setName(userEntity.getName());
-        dto.setSurname(userEntity.getSurname());
-        dto.setImageUrl(userEntity.getImageUrl());
-        dto.setLinkedinUrl(userEntity.getLinkedinUrl());
-        dto.setRole(userEntity instanceof StudentEntity ? "Student" : "Organization");
-
-        return dto;
+        return userMapper.toResponseDTO(userEntity);
     }
 
     public UserResponseDTO getUserDTOById(Long id) {
@@ -75,87 +68,18 @@ public class UserService {
     }
 
     public StudentResponseDTO mapToStudentDTO(StudentEntity entity) {
-        StudentResponseDTO dto = new StudentResponseDTO();
-        dto.setId(entity.getId());
-        dto.setDescription(entity.getDescription());
-        dto.setPhone(entity.getPhone());
-        dto.setEmail(entity.getEmail());
-        dto.setLocation(entity.getLocation());
-        dto.setName(entity.getName());
-        dto.setSurname(entity.getSurname());
-        dto.setImageUrl(entity.getImageUrl());
-        dto.setLinkedinUrl(entity.getLinkedinUrl());
-        dto.setRole("Student");
-
-        dto.setGithubUrl(entity.getGithubUrl());
-        dto.setCareer(entity.getCareer());
-        dto.setCurrentYearLevel(entity.getCurrentYearLevel());
-        dto.setInstitution(entity.getInstitution());
-        dto.setSkills(entity.getSkills());
-        dto.setIncomeDate(entity.getIncomeDate());
-        dto.setDateOfBirth(entity.getDateOfBirth());
-        dto.setCvUrl(entity.getCvUrl());
-        dto.setCvFileName(entity.getCvFileName());
-        dto.setCoverLetter(entity.getCoverLetter());
-        
-        if (entity.getLanguages() != null) {
-            List<LanguageResponseDTO> languages = entity.getLanguages().stream()
-                    .map(lang -> {
-                        LanguageResponseDTO langDto = new LanguageResponseDTO();
-                        langDto.setId(lang.getId());
-                        langDto.setName(lang.getName());
-                        langDto.setLevel(lang.getLevel());
-                        return langDto;
-                    })
-                    .toList();
-            dto.setLanguages(languages);
-        }
-        
-        return dto;
+        return studentMapper.toResponseDTO(entity);
     }
 
     private OrganizationResponseDTO mapToOrganizationDTO(OrganizationEntity entity) {
-        OrganizationResponseDTO dto = new OrganizationResponseDTO();
-        dto.setId(entity.getId());
-        dto.setDescription(entity.getDescription());
-        dto.setPhone(entity.getPhone());
-        dto.setEmail(entity.getEmail());
-        dto.setLocation(entity.getLocation());
-        dto.setName(entity.getName());
-        dto.setSurname(entity.getSurname());
-        dto.setImageUrl(entity.getImageUrl());
-        dto.setLinkedinUrl(entity.getLinkedinUrl());
-        dto.setRole("Organization");
-
-        dto.setWebSiteUrl(entity.getWebSiteUrl());
-        dto.setIndustry(entity.getIndustry());
-        dto.setSize(entity.getSize());
-        return dto;
+        return organizationMapper.toResponseDTO(entity);
     }
 
     public OrganizationSummaryResponseDTO mapToOrganizationSummary(OrganizationEntity entity) {
-        OrganizationSummaryResponseDTO dto = new OrganizationSummaryResponseDTO();
-        dto.setId(entity.getId());
-        dto.setName(entity.getName());
-        dto.setSurname(entity.getSurname());
-        dto.setEmail(entity.getEmail());
-        dto.setIndustry(entity.getIndustry());
-        dto.setLocation(entity.getLocation());
-        return dto;
+        return organizationMapper.toSummaryDTO(entity);
     }
 
     private UserResponseDTO mapToUserDTO(UserEntity entity) {
-        UserResponseDTO dto = new UserResponseDTO();
-        dto.setId(entity.getId());
-        dto.setDescription(entity.getDescription());
-        dto.setPhone(entity.getPhone());
-        dto.setEmail(entity.getEmail());
-        dto.setLocation(entity.getLocation());
-        dto.setName(entity.getName());
-        dto.setSurname(entity.getSurname());
-        dto.setImageUrl(entity.getImageUrl());
-        dto.setLinkedinUrl(entity.getLinkedinUrl());
-        dto.setRole(entity instanceof StudentEntity ? "Student" : "Organization");
-        return dto;
+        return userMapper.toResponseDTO(entity);
     }
 }
