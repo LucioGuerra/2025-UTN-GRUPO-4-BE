@@ -7,6 +7,8 @@ import org.agiles.bolsaestudiantil.dto.request.OfferRequestDTO;
 import org.agiles.bolsaestudiantil.dto.request.update.OfferUpdateRequestDTO;
 import org.agiles.bolsaestudiantil.dto.response.apply.ApplyForOfferResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.student.StudentSummaryResponseDTO;
+import org.agiles.bolsaestudiantil.mapper.OfferMapper;
+import org.agiles.bolsaestudiantil.mapper.StudentMapper;
 import org.agiles.bolsaestudiantil.dto.response.OfferResponseDTO;
 import org.agiles.bolsaestudiantil.entity.AttributeEntity;
 import org.agiles.bolsaestudiantil.entity.OfferEntity;
@@ -26,28 +28,30 @@ public class OfferService {
     private final OfferRepository offerRepository;
     private final AttributeService attributeService;
     private final UserService userService;
+    private final OfferMapper offerMapper;
+    private final StudentMapper studentMapper;
 
     public OfferResponseDTO createOffer(OfferRequestDTO request) {
         OfferEntity entity = mapToEntity(request);
         OfferEntity saved = offerRepository.save(entity);
-        return mapToDTO(saved);
+        return offerMapper.toResponseDTO(saved);
     }
 
     public OfferResponseDTO getOfferById(Long id) {
         OfferEntity entity = getOfferEntityById(id);
-        return mapToDTO(entity);
+        return offerMapper.toResponseDTO(entity);
     }
 
     public Page<OfferResponseDTO> getAllOffers(OfferFilter filter, Pageable pageable) {
         Page<OfferEntity> offers = offerRepository.findAll(OfferSpecification.withFilters(filter), pageable);
-        return offers.map(this::mapToDTO);
+        return offers.map(offerMapper::toResponseDTO);
     }
 
     public OfferResponseDTO updateOffer(Long id, OfferUpdateRequestDTO request) {
         OfferEntity entity = getOfferEntityById(id);
         updateEntityFromUpdateDTO(entity, request);
         OfferEntity saved = offerRepository.save(entity);
-        return mapToDTO(saved);
+        return offerMapper.toResponseDTO(saved);
     }
 
     public void deleteOffer(Long id) {
@@ -105,40 +109,5 @@ public class OfferService {
         }
     }
 
-    private OfferResponseDTO mapToDTO(OfferEntity entity) {
-        List<ApplyForOfferResponseDTO> applyDTOs = entity.getApplyList().stream()
-                .map(this::mapToOfferApplyDTO)
-                .toList();
 
-        OfferResponseDTO dto = new OfferResponseDTO();
-        dto.setId(entity.getId());
-        dto.setTitle(entity.getTitle());
-        dto.setDescription(entity.getDescription());
-        dto.setLocation(entity.getLocation());
-        dto.setEstimatedPayment(entity.getEstimatedPayment());
-        dto.setRequirements(entity.getRequirements());
-        dto.setModality(entity.getModality());
-        dto.setApplyList(applyDTOs);
-        dto.setBidder(userService.userToDTO(entity.getBidder()));
-        return dto;
-    }
-
-    private ApplyForOfferResponseDTO mapToOfferApplyDTO(ApplyEntity apply) {
-        ApplyForOfferResponseDTO dto = new ApplyForOfferResponseDTO();
-        dto.setId(apply.getId());
-        dto.setCustomCoverLetter(apply.getCustomCoverLetter());
-        dto.setStudent(mapToStudentSummary(apply.getStudent()));
-        return dto;
-    }
-
-    private StudentSummaryResponseDTO mapToStudentSummary(StudentEntity entity) {
-        StudentSummaryResponseDTO dto = new StudentSummaryResponseDTO();
-        dto.setId(entity.getId());
-        dto.setName(entity.getName());
-        dto.setSurname(entity.getSurname());
-        dto.setEmail(entity.getEmail());
-        dto.setCareer(entity.getCareer());
-        dto.setInstitution(entity.getInstitution());
-        return dto;
-    }
 }

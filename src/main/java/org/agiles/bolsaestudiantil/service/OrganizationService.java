@@ -6,6 +6,7 @@ import org.agiles.bolsaestudiantil.dto.request.update.OrganizationUpdateRequestD
 import org.agiles.bolsaestudiantil.dto.response.OrganizationResponseDTO;
 import org.agiles.bolsaestudiantil.entity.OrganizationEntity;
 import org.agiles.bolsaestudiantil.event.RegisterUserEvent;
+import org.agiles.bolsaestudiantil.mapper.OrganizationMapper;
 import org.agiles.bolsaestudiantil.repository.OrganizationRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
@@ -17,6 +18,7 @@ public class OrganizationService {
 
     private final OrganizationRepository organizationRepository;
     private final UserService userService;
+    private final OrganizationMapper organizationMapper;
 
     public OrganizationEntity getOrganizationEntityById(Long id) {
         return organizationRepository.findById(id)
@@ -25,14 +27,14 @@ public class OrganizationService {
 
     public OrganizationResponseDTO getOrganizationById(Long id) {
         OrganizationEntity entity = getOrganizationEntityById(id);
-        return mapToOrganizationDTO(entity);
+        return organizationMapper.toResponseDTO(entity);
     }
 
     public OrganizationResponseDTO updateOrganization(Long id, OrganizationUpdateRequestDTO request) {
         OrganizationEntity entity = getOrganizationEntityById(id);
         updateEntityFromDTO(entity, request);
         OrganizationEntity saved = organizationRepository.save(entity);
-        return mapToOrganizationDTO(saved);
+        return organizationMapper.toResponseDTO(saved);
     }
 
     public void deleteOrganization(Long id) {
@@ -55,22 +57,7 @@ public class OrganizationService {
         if (request.getSize() != null) entity.setSize(request.getSize());
     }
 
-    private OrganizationResponseDTO mapToOrganizationDTO(OrganizationEntity entity) {
-        OrganizationResponseDTO dto = new OrganizationResponseDTO();
-        dto.setId(entity.getId());
-        dto.setDescription(entity.getDescription());
-        dto.setPhone(entity.getPhone());
-        dto.setEmail(entity.getEmail());
-        dto.setLocation(entity.getLocation());
-        dto.setName(entity.getName());
-        dto.setSurname(entity.getSurname());
-        dto.setImageUrl(entity.getImageUrl());
-        dto.setLinkedinUrl(entity.getLinkedinUrl());
-        dto.setWebSiteUrl(entity.getWebSiteUrl());
-        dto.setIndustry(entity.getIndustry());
-        dto.setSize(entity.getSize());
-        return dto;
-    }
+
 
     @Async
     @EventListener
