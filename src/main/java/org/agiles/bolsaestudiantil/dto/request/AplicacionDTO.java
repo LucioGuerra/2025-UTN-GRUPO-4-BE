@@ -7,4 +7,7 @@ public class AplicacionDTO {
     private Long ofertaId;
     private Long usuarioId;
     private String cartaPresentacion;
+
+
+
 }
