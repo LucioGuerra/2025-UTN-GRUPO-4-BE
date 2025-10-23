@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.response.StudentResponseDTO;
 import org.agiles.bolsaestudiantil.entity.AttributeEntity;
+import org.agiles.bolsaestudiantil.entity.LanguageEntity;
 import org.agiles.bolsaestudiantil.entity.StudentEntity;
 import org.agiles.bolsaestudiantil.event.RegisterUserEvent;
 import org.agiles.bolsaestudiantil.repository.StudentRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -21,6 +23,7 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final UserService userService;
     private final AttributeService attributeService;
+    private final LanguageService languageService;
 
     public StudentEntity getStudentEntityById(Long id) {
         return studentRepository.findById(id)
@@ -46,6 +49,13 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
+    public void deleteLanguageFromStudent(Long studentId, Long languageId) {
+        StudentEntity student = getStudentEntityById(studentId);
+        student.getLanguages().removeIf(lang -> lang.getId().equals(languageId));
+        studentRepository.save(student);
+        languageService.deleteLanguage(languageId);
+    }
+
     private void updateEntityFromMap(StudentEntity entity, Map<String, Object> updates) {
         updates.forEach((key, value) -> {
             if (value != null) {
@@ -68,6 +78,33 @@ public class StudentService {
                                     .map(name -> attributeService.findOrCreateAttribute((String) name))
                                     .toList();
                             entity.setAttributes(attributes);
+                        }
+                    }
+                    case "languages" -> {
+                        if (value instanceof List<?> languageRequests) {
+                            List<LanguageEntity> languages = languageRequests.stream()
+                                    .map(langReq -> {
+                                        if (langReq instanceof Map<?, ?> langMap) {
+                                            String name = (String) langMap.get("name");
+                                            Integer level = (Integer) langMap.get("level");
+                                            
+                                            LanguageEntity existing = entity.getLanguages().stream()
+                                                    .filter(lang -> lang.getName().equals(name))
+                                                    .findFirst()
+                                                    .orElse(null);
+                                            
+                                            if (existing != null) {
+                                                existing.setLevel(level);
+                                                return existing;
+                                            } else {
+                                                return languageService.createLanguage(name, level);
+                                            }
+                                        }
+                                        return null;
+                                    })
+                                    .filter(Objects::nonNull)
+                                    .toList();
+                            entity.setLanguages(languages);
                         }
                     }
                 }

@@ -32,4 +32,10 @@ public class StudentController {
         studentService.deleteStudent(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/{studentId}/languages/{languageId}")
+    public ResponseEntity<Void> deleteLanguageFromStudent(@PathVariable Long studentId, @PathVariable Long languageId) {
+        studentService.deleteLanguageFromStudent(studentId, languageId);
+        return ResponseEntity.noContent().build();
+    }
 }
