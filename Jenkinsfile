@@ -5,6 +5,9 @@ pipeline {
         DEPLOY_DIR = '/opt/publico/agiles/backend/2025-UTN-GRUPO-4-BE'  // ruta en tu servidor donde vive el repo
     }
 
+    triggers {
+        githubPush()  // <-- ESTE es el método correcto
+    }
 
     stages {
         stage('Deploy') {
