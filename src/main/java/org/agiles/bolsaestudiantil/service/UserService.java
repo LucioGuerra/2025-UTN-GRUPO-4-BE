@@ -1,6 +1,7 @@
 package org.agiles.bolsaestudiantil.service;
 
 import lombok.AllArgsConstructor;
+import org.agiles.bolsaestudiantil.dto.response.LanguageResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.OrganizationResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.StudentResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.UserResponseDTO;
@@ -10,6 +11,8 @@ import org.agiles.bolsaestudiantil.entity.UserEntity;
 import org.agiles.bolsaestudiantil.repository.OrganizationRepository;
 import org.agiles.bolsaestudiantil.repository.StudentRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -93,6 +96,20 @@ public class UserService {
         dto.setCvUrl(entity.getCvUrl());
         dto.setCvFileName(entity.getCvFileName());
         dto.setCoverLetter(entity.getCoverLetter());
+        
+        if (entity.getLanguages() != null) {
+            List<LanguageResponseDTO> languages = entity.getLanguages().stream()
+                    .map(lang -> {
+                        LanguageResponseDTO langDto = new LanguageResponseDTO();
+                        langDto.setId(lang.getId());
+                        langDto.setName(lang.getName());
+                        langDto.setLevel(lang.getLevel());
+                        return langDto;
+                    })
+                    .toList();
+            dto.setLanguages(languages);
+        }
+        
         return dto;
     }
 

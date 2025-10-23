@@ -4,6 +4,7 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
+import org.agiles.bolsaestudiantil.dto.response.LanguageResponseDTO;
 import org.agiles.bolsaestudiantil.entity.ApplyEntity;
 import org.agiles.bolsaestudiantil.entity.AttributeEntity;
 import org.agiles.bolsaestudiantil.entity.LanguageEntity;
@@ -36,4 +37,6 @@ public class StudentResponseDTO extends UserResponseDTO {
     private String cvFileName;
 
     private String coverLetter;
+
+    private List<LanguageResponseDTO> languages;
 }

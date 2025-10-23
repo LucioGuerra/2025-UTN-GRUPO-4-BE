@@ -18,4 +18,8 @@ public class LanguageService {
         languageEntity.setLevel(level);
         return languageRepository.save(languageEntity);
     }
+
+    public void deleteLanguage(Long id) {
+        languageRepository.deleteById(id);
+    }
 }
