@@ -2,38 +2,33 @@ pipeline {
     agent any
 
     environment {
-        DEPLOY_DIR = '/opt/publico/agiles/backend/2025-UTN-GRUPO-4-BE'  // ruta en tu servidor donde vive el repo
+        DEPLOY_DIR = '/opt/publico/agiles/backend/2025-UTN-GRUPO-4-BE'
     }
 
     triggers {
-        githubPush()  // <-- ESTE es el método correcto
+        githubPush()
     }
 
     stages {
         stage('Deploy') {
             when {
                 expression {
-                    env.GIT_BRANCH == 'origin/refactor' ||
-                    env.BRANCH_NAME == 'refactor'
+                    // Jenkins puede usar BRANCH_NAME o GIT_BRANCH según el plugin
+                    return env.BRANCH_NAME == 'refactor' || env.GIT_BRANCH == 'origin/refactor'
                 }
             }
             steps {
-                dir("${env.DEPLOY_DIR}") {
-                    sh '''
-                    echo "🔻 Deteniendo contenedores..."
-                    sudo docker compose down || true
+                sh '''
+                echo "📦 Actualizando código..."
+                cd ${DEPLOY_DIR}
+                git checkout refactor
+                git pull origin refactor
 
-                    echo "📦 Actualizando código..."
-                    git checkout refactor
-                    git pull origin refactor
-
-                    echo "🚀 Levantando contenedores..."
-                    sudo docker compose build --no-cache
-                    sudo docker compose up -d --force-recreate
-
-                    echo "✅ Despliegue completado con éxito."
-                    '''
-                }
+                echo "🚀 Desplegando contenedores..."
+                sudo docker compose down || true
+                sudo docker compose build --no-cache
+                sudo docker compose up -d --force-recreate
+                '''
             }
         }
     }
