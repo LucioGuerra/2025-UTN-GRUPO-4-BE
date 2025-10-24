@@ -45,4 +45,3 @@ public class SecurityConfig {
         return converter;
     }
 }
-
