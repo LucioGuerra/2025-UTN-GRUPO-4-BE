@@ -12,7 +12,10 @@ pipeline {
     stages {
         stage('Deploy') {
             when {
-                branch 'refactor'  // solo ejecuta si la rama del push es "refactor"
+                expression {
+                    env.GIT_BRANCH == 'origin/refactor' ||
+                    env.BRANCH_NAME == 'refactor'
+                }
             }
             steps {
                 dir("${env.DEPLOY_DIR}") {
