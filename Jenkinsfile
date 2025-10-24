@@ -21,12 +21,11 @@ pipeline {
                     docker compose down || true
 
                     echo "📦 Actualizando código..."
-                    git fetch origin refactor
                     git checkout refactor
                     git pull origin refactor
 
                     echo "🚀 Levantando contenedores..."
-                    docker compose up -d --force-recreate
+                    docker compose up -d --force-recreate --build
 
                     echo "✅ Despliegue completado con éxito."
                     '''
