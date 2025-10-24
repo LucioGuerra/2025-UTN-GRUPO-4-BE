@@ -21,15 +21,15 @@ pipeline {
                 dir("${env.DEPLOY_DIR}") {
                     sh '''
                     echo "🔻 Deteniendo contenedores..."
-                    docker compose down || true
+                    sudo docker compose down || true
 
                     echo "📦 Actualizando código..."
                     git checkout refactor
                     git pull origin refactor
 
                     echo "🚀 Levantando contenedores..."
-                    docker compose build --no-cache
-                    docker compose up -d --force-recreate
+                    sudo docker compose build --no-cache
+                    sudo docker compose up -d --force-recreate
 
                     echo "✅ Despliegue completado con éxito."
                     '''
