@@ -25,7 +25,8 @@ pipeline {
                     git pull origin refactor
 
                     echo "🚀 Levantando contenedores..."
-                    docker compose up -d --force-recreate --build
+                    docker compose build --no-cache
+                    docker compose up -d --force-recreate
 
                     echo "✅ Despliegue completado con éxito."
                     '''
