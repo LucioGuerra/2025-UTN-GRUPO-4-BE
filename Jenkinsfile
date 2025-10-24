@@ -25,9 +25,9 @@ pipeline {
                 git pull origin refactor
 
                 echo "🚀 Desplegando contenedores..."
-                sudo docker compose down || true
-                sudo docker compose build --no-cache
-                sudo docker compose up -d --force-recreate
+                docker compose down || true
+                docker compose build --no-cache
+                docker compose up -d --force-recreate
                 '''
             }
         }
