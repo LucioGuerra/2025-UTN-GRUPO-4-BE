@@ -4,22 +4,22 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.request.AplicanteFilterDTO;
+import org.agiles.bolsaestudiantil.dto.request.MateriaDTO;
 import org.agiles.bolsaestudiantil.dto.request.ModAplicanteDTO;
 import org.agiles.bolsaestudiantil.dto.response.AplicanteDTO;
 import org.agiles.bolsaestudiantil.dto.response.AplicanteListaDTO;
-import org.agiles.bolsaestudiantil.entity.AplicacionEntity;
-import org.agiles.bolsaestudiantil.entity.AplicanteEntity;
-import org.agiles.bolsaestudiantil.entity.OfertaEntity;
+import org.agiles.bolsaestudiantil.entity.*;
 import org.agiles.bolsaestudiantil.mapper.AplicanteMapper;
-import org.agiles.bolsaestudiantil.repository.AplicacionRepository;
-import org.agiles.bolsaestudiantil.repository.AplicanteRepository;
-import org.agiles.bolsaestudiantil.repository.OfertaRepository;
+import org.agiles.bolsaestudiantil.mapper.MateriaMapper;
+import org.agiles.bolsaestudiantil.repository.*;
 import org.agiles.bolsaestudiantil.specification.AplicanteSpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +30,10 @@ public class AplicanteService {
     private final AplicacionRepository aplicacionRepository;
     private final OfertaRepository ofertaRepository;
     private final AplicanteMapper aplicanteMapper;
+
+    private final MateriaRepository materiaRepository;
+    private final MateriaXAplicanteRepository materiaXAplicanteRepository;
+    private final MateriaMapper materiaMapper;
 
     public AplicanteEntity findById(Long id) {
         return aplicanteRepository.findById(id)
@@ -97,5 +101,40 @@ public class AplicanteService {
 
         aplicanteRepository.save(aplicante);
         return null;
+    }
+
+    @Transactional
+    public List<MateriaDTO> cargarMaterias(Long id, List<MateriaDTO> materias){
+        AplicanteEntity aplicante = findById(id);
+
+        aplicante.getMaterias().clear();
+
+        Set<MateriaXAplicanteEntity> nuevasMaterias = new HashSet<>();
+
+        for (MateriaDTO dto : materias) {
+            if (dto.getNota() != null && dto.getNota() >= 6) {
+                MateriaEntity materia = materiaRepository.findByCodigo(dto.getCodigo())
+                        .orElseGet(() -> {
+                            MateriaEntity nuevaMateria = new MateriaEntity();
+                            nuevaMateria.setCodigo(dto.getCodigo());
+                            nuevaMateria.setNombre(dto.getNombre());
+                            return materiaRepository.save(nuevaMateria);
+                        });
+
+                MateriaXAplicanteEntity link = new MateriaXAplicanteEntity();
+                link.setAplicante(aplicante);
+                link.setMateria(materia);
+                link.setNota(dto.getNota());
+
+                nuevasMaterias.add(link);
+            }
+        }
+
+        aplicante.getMaterias().addAll(nuevasMaterias);
+        AplicanteEntity aplicanteGuardado = aplicanteRepository.save(aplicante);
+
+        return aplicanteGuardado.getMaterias().stream()
+                .map(materiaMapper::toDTO)
+                .collect(Collectors.toList());
     }
 }
