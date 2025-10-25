@@ -1,5 +1,6 @@
 package org.agiles.bolsaestudiantil.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.response.LanguageResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.OrganizationResponseDTO;
@@ -42,7 +43,11 @@ public class UserService {
         if (user == null) {
             user = organizationRepository.findByKeycloakId(keycloakId).orElse(null);
         }
-        return getUserDTOById(user != null ? user.getId() : null);
+        if (user == null) {
+            throw new EntityNotFoundException("User not found with keycloakId: " + keycloakId);
+        }
+
+        return getUserDTOById(user.getId());
     }
 
     public UserResponseDTO userToDTO(UserEntity userEntity) {
