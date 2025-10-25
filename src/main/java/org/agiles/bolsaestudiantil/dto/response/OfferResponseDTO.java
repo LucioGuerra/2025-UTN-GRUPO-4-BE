@@ -23,6 +23,8 @@ public class OfferResponseDTO {
 
     private List<ApplyForOfferResponseDTO> applyList;
 
+    private List<String> attributes;
+
     private UserResponseDTO bidder;
 
 
