@@ -54,4 +54,18 @@ public class OfertaController {
         ofertaService.aplicarAOferta(aplicacionDTO.getOfertaId(), aplicacionDTO.getUsuarioId(), aplicacionDTO.getCartaPresentacion());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("hasRole('Organization')")
+    public ResponseEntity<OfertaResponseDTO> getOfertaById(@PathVariable Long id){
+        OfertaResponseDTO oferta = ofertaService.findOfertaById(id);
+        return ResponseEntity.ok(oferta);
+    }
+
+    @PatchMapping("/desactivar/{id}")
+    @PreAuthorize("hasRole('Organization')")
+    public ResponseEntity<Void> desactivarOferta(@PathVariable Long id){
+        ofertaService.desactivarOferta(id);
+        return ResponseEntity.noContent().build();
+    }
 }
