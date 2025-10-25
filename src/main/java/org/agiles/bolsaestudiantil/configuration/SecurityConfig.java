@@ -3,6 +3,8 @@ package org.agiles.bolsaestudiantil.configuration;
 import org.agiles.bolsaestudiantil.util.KeycloakRealmRoleConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -27,12 +29,26 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // ✅ Habilita CORS antes de la autenticación
+                .cors(Customizer.withDefaults())
+
+                // ❌ Deshabilita CSRF (usás tokens, no formularios)
                 .csrf(AbstractHttpConfigurer::disable)
+
+                // ✅ Permite iframes (solo si usás H2 o swagger embed)
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
+
+                // ✅ Configura las rutas públicas
                 .authorizeHttpRequests(auth -> auth
+                        // Permitir preflight requests
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // Permitir swagger y endpoints públicos
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
+                        // El resto requiere autenticación
                         .anyRequest().authenticated()
                 )
+
+                // ✅ Configura el resource server con Keycloak
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthConverter()))
                 );
