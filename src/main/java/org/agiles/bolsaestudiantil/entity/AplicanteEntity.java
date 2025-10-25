@@ -32,6 +32,9 @@ public class AplicanteEntity extends UserEntity{
     @OneToMany(mappedBy = "aplicante", cascade = {CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
     private Set<AplicacionEntity> ofertas;
 
+    @OneToMany(mappedBy = "aplicante", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<MateriaXAplicanteEntity> materias = new HashSet<>();
+
     public  AplicanteEntity() {
         ofertas = new HashSet<>();
     }

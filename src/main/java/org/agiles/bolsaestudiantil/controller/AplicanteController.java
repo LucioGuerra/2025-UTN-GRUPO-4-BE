@@ -2,6 +2,7 @@ package org.agiles.bolsaestudiantil.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.request.AplicanteFilterDTO;
+import org.agiles.bolsaestudiantil.dto.request.MateriaDTO;
 import org.agiles.bolsaestudiantil.dto.request.ModAplicanteDTO;
 import org.agiles.bolsaestudiantil.dto.response.AplicanteDTO;
 import org.agiles.bolsaestudiantil.dto.response.AplicanteListaDTO;
@@ -13,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/aplicantes")
@@ -50,4 +53,9 @@ public class AplicanteController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    @PostMapping("/cargar-materias/{id}")
+    public ResponseEntity<List<MateriaDTO>> cargarMaterias(@PathVariable Long id, @RequestBody List<MateriaDTO> materias) {
+        List<MateriaDTO> materiasCargadas = aplicanteService.cargarMaterias(id, materias);
+        return ResponseEntity.ok(materiasCargadas);
+    }
 }
