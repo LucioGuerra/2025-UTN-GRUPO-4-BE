@@ -151,8 +151,22 @@ public class OfertaService {
                 });
     }
 
+    public OfertaResponseDTO findOfertaById(Long id) {
+        OfertaEntity oferta = getEntityById(id);
+        return ofertaMapper.toOfertaResponseDTO(oferta);
+    }
+
     public OfertaEntity getEntityById(Long id) {
         return ofertaRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Oferta no encontrada con id: " + id));
+    }
+
+    @Transactional
+    public void desactivarOferta(Long ofertaId) {
+        OfertaEntity oferta = getEntityById(ofertaId);
+
+        oferta.setStatus("closed");
+
+        ofertaRepository.save(oferta);
     }
 }
