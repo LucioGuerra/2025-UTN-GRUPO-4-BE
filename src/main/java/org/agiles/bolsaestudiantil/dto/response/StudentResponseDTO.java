@@ -5,10 +5,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import org.agiles.bolsaestudiantil.dto.response.LanguageResponseDTO;
-import org.agiles.bolsaestudiantil.entity.ApplyEntity;
-import org.agiles.bolsaestudiantil.entity.AttributeEntity;
-import org.agiles.bolsaestudiantil.entity.LanguageEntity;
-import org.agiles.bolsaestudiantil.entity.SubjectEntity;
+import org.agiles.bolsaestudiantil.dto.response.SubjectResponseDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -39,4 +36,6 @@ public class StudentResponseDTO extends UserResponseDTO {
     private String coverLetter;
 
     private List<LanguageResponseDTO> languages;
+    
+    private List<SubjectResponseDTO> subjects;
 }
