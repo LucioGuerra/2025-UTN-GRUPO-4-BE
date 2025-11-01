@@ -2,6 +2,7 @@ package org.agiles.bolsaestudiantil.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.agiles.bolsaestudiantil.dto.internal.UserFilter;
 import org.agiles.bolsaestudiantil.dto.response.LanguageResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.OrganizationResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.StudentResponseDTO;
@@ -15,6 +16,9 @@ import org.agiles.bolsaestudiantil.entity.StudentEntity;
 import org.agiles.bolsaestudiantil.entity.UserEntity;
 import org.agiles.bolsaestudiantil.repository.OrganizationRepository;
 import org.agiles.bolsaestudiantil.repository.StudentRepository;
+import org.agiles.bolsaestudiantil.repository.UserRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +29,7 @@ public class UserService {
 
     private final StudentRepository studentRepository;
     private final OrganizationRepository organizationRepository;
+    private final UserRepository userRepository;
     private final StudentMapper studentMapper;
     private final OrganizationMapper organizationMapper;
     private final UserMapper userMapper;
@@ -86,5 +91,14 @@ public class UserService {
 
     private UserResponseDTO mapToUserDTO(UserEntity entity) {
         return userMapper.toResponseDTO(entity);
+    }
+
+    public Page<UserResponseDTO> searchUsers(UserFilter filter, Pageable pageable) {
+        if (filter.getSearch() == null || filter.getSearch().isBlank()) {
+            return Page.empty(pageable);
+        }
+        
+        Page<UserEntity> users = userRepository.findByNameOrSurnameContaining(filter.getSearch(), pageable);
+        return users.map(this::userToDTO);
     }
 }
