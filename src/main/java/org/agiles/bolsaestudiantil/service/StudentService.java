@@ -1,21 +1,29 @@
 package org.agiles.bolsaestudiantil.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.agiles.bolsaestudiantil.client.GradeProcessorClient;
+import org.agiles.bolsaestudiantil.dto.request.SubjectRequestDTO;
 import org.agiles.bolsaestudiantil.dto.request.update.StudentUpdateRequestDTO;
 import org.agiles.bolsaestudiantil.dto.response.StudentResponseDTO;
-import org.agiles.bolsaestudiantil.entity.AttributeEntity;
-import org.agiles.bolsaestudiantil.entity.LanguageEntity;
-import org.agiles.bolsaestudiantil.entity.StudentEntity;
+import org.agiles.bolsaestudiantil.dto.response.SubjectResponseDTO;
+import org.agiles.bolsaestudiantil.entity.*;
 import org.agiles.bolsaestudiantil.event.RegisterUserEvent;
 import org.agiles.bolsaestudiantil.mapper.StudentMapper;
+import org.agiles.bolsaestudiantil.mapper.SubjectMapper;
 import org.agiles.bolsaestudiantil.repository.StudentRepository;
+import org.agiles.bolsaestudiantil.repository.StudentSubjectRepository;
+import org.agiles.bolsaestudiantil.repository.SubjectRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -26,6 +34,10 @@ public class StudentService {
     private final AttributeService attributeService;
     private final LanguageService languageService;
     private final StudentMapper studentMapper;
+    private final SubjectRepository subjectRepository;
+    private final StudentSubjectRepository studentSubjectRepository;
+    private final SubjectMapper subjectMapper;
+    private final GradeProcessorClient gradeProcessorClient;
 
     public StudentEntity getStudentEntityById(Long id) {
         return studentRepository.findById(id)
@@ -123,5 +135,45 @@ public class StudentService {
             student.setLinkedinUrl(event.getLinkedinUrl());
             studentRepository.save(student);
         }
+    }
+
+    @Transactional
+    public List<SubjectResponseDTO> loadSubjects(Long id, List<SubjectRequestDTO> subjects) {
+        StudentEntity student = getStudentEntityById(id);
+        
+        student.getSubjects().clear();
+        
+        List<StudentSubjectEntity> newSubjects = new ArrayList<>();
+        
+        for (SubjectRequestDTO dto : subjects) {
+            if (dto.getNote() != null && dto.getNote() >= 6) {
+                SubjectEntity subject = subjectRepository.findByCode(dto.getCode())
+                        .orElseGet(() -> {
+                            SubjectEntity newSubject = new SubjectEntity();
+                            newSubject.setCode(dto.getCode());
+                            newSubject.setName(dto.getName());
+                            return subjectRepository.save(newSubject);
+                        });
+                
+                StudentSubjectEntity link = new StudentSubjectEntity();
+                link.setStudent(student);
+                link.setSubject(subject);
+                link.setNote(dto.getNote());
+                
+                newSubjects.add(link);
+            }
+        }
+        
+        student.getSubjects().addAll(newSubjects);
+        StudentEntity savedStudent = studentRepository.save(student);
+        
+        return savedStudent.getSubjects().stream()
+                .map(subjectMapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    public Map<String, Object> processGradesFromExcel(Long id, MultipartFile file, String authToken) {
+        getStudentEntityById(id); // Validate student exists
+        return gradeProcessorClient.processGrades(file, id.toString(), authToken.replace("Bearer ", ""));
     }
 }

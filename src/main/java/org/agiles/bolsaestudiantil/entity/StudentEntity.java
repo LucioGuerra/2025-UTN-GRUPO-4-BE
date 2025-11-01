@@ -43,9 +43,8 @@ public class StudentEntity extends UserEntity {
     @JoinTable(name = "student_attributes")
     private List<AttributeEntity> attributes;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "student_subjects")
-    private List<SubjectEntity> subjects;
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StudentSubjectEntity> subjects;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id")

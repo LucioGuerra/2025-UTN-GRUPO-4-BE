@@ -16,6 +16,6 @@ public class SubjectEntity {
     private Long id;
 
     private String name;
-
-    private Integer note;
+    
+    private String code;
 }
