@@ -18,10 +18,11 @@ public class AttributeService {
     private final AttributeMapper attributeMapper;
 
     public AttributeEntity findOrCreateAttribute(String name) {
-        return attributeRepository.findByName(name)
+        String lowerCaseName = name.toLowerCase();
+        return attributeRepository.findByName(lowerCaseName)
                 .orElseGet(() -> {
                     AttributeEntity attributeEntity = new AttributeEntity();
-                    attributeEntity.setName(name);
+                    attributeEntity.setName(lowerCaseName);
                     return attributeRepository.save(attributeEntity);
                 });
     }
