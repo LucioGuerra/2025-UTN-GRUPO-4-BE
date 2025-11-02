@@ -18,8 +18,10 @@ public class OfferEntity {
 
     private String title;
 
+    @Column(length = 5000)
     private String description;
 
+    @Column(length = 5000)
     private String requirements;
 
     private String modality;

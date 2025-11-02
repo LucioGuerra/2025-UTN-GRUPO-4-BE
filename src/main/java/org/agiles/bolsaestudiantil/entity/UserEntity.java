@@ -17,6 +17,7 @@ public class UserEntity {
 
     private String keycloakId;
 
+    @Column(length = 5000)
     private String description;
 
     private String phone;

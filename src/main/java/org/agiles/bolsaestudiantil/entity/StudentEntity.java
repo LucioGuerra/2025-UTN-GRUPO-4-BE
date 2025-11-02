@@ -34,6 +34,7 @@ public class StudentEntity extends UserEntity {
 
     private String cvFileName;
 
+    @Column(length = 5000)
     private String coverLetter;
 
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY)

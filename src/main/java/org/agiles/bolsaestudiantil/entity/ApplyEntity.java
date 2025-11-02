@@ -13,6 +13,7 @@ public class ApplyEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 5000)
     private String customCoverLetter;
 
     @ManyToOne(fetch = FetchType.LAZY)
