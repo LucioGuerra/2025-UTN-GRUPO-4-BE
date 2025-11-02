@@ -10,5 +10,7 @@ public class StudentSummaryResponseDTO {
     private String email;
     private String career;
     private String institution;
+    private String imageUrl;
+    private String cvUrl;
     private String role = "Student";
 }

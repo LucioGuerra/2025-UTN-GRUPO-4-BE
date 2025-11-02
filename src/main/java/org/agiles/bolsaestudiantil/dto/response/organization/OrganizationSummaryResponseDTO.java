@@ -10,5 +10,6 @@ public class OrganizationSummaryResponseDTO {
     private String email;
     private String industry;
     private String location;
+    private String imageUrl;
     private String role = "Organization";
 }
