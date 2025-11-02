@@ -113,10 +113,11 @@ public class OfferService {
         if (request.getEstimatedPayment() != null) entity.setEstimatedPayment(request.getEstimatedPayment());
         
         if (request.getAttributes() != null) {
-            List<AttributeEntity> attributes = request.getAttributes().stream()
+            entity.getAttributes().clear();
+            List<AttributeEntity> newAttributes = request.getAttributes().stream()
                     .map(attributeService::findOrCreateAttribute)
                     .toList();
-            entity.setAttributes(attributes);
+            entity.getAttributes().addAll(newAttributes);
         }
     }
 
