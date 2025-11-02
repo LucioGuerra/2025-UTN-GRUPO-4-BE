@@ -14,7 +14,8 @@ public class AttributeSpecification {
             List<Predicate> predicates = new ArrayList<>();
 
             if (filter.getName() != null && !filter.getName().isBlank()) {
-                predicates.add(cb.like(root.get("name"), "%" + filter.getName().toLowerCase() + "%"));
+                String capitalizedName = filter.getName().substring(0, 1).toUpperCase() + filter.getName().substring(1).toLowerCase();
+                predicates.add(cb.like(root.get("name"), "%" + capitalizedName + "%"));
             }
 
             return cb.and(predicates.toArray(new Predicate[0]));

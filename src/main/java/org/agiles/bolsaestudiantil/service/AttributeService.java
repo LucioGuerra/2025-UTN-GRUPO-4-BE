@@ -18,11 +18,11 @@ public class AttributeService {
     private final AttributeMapper attributeMapper;
 
     public AttributeEntity findOrCreateAttribute(String name) {
-        String lowerCaseName = name.toLowerCase();
-        return attributeRepository.findByName(lowerCaseName)
+        String capitalizedName = capitalizeFirstLetter(name);
+        return attributeRepository.findByName(capitalizedName)
                 .orElseGet(() -> {
                     AttributeEntity attributeEntity = new AttributeEntity();
-                    attributeEntity.setName(lowerCaseName);
+                    attributeEntity.setName(capitalizedName);
                     return attributeRepository.save(attributeEntity);
                 });
     }
@@ -30,5 +30,12 @@ public class AttributeService {
     public List<AttributeResponseDTO> getAllAttributes(AttributeFilter filter) {
         List<AttributeEntity> attributes = attributeRepository.findAll(AttributeSpecification.withFilters(filter));
         return attributes.stream().map(attributeMapper::toResponseDTO).toList();
+    }
+
+    private String capitalizeFirstLetter(String name) {
+        if (name == null || name.isEmpty()) {
+            return name;
+        }
+        return name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
     }
 }
