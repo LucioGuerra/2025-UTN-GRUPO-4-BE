@@ -3,6 +3,7 @@ package org.agiles.bolsaestudiantil.service;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.agiles.bolsaestudiantil.client.GradeProcessorClient;
 import org.agiles.bolsaestudiantil.dto.request.SubjectRequestDTO;
 import org.agiles.bolsaestudiantil.dto.request.update.StudentUpdateRequestDTO;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class StudentService {
 
     private final StudentRepository studentRepository;
@@ -169,21 +171,30 @@ public class StudentService {
     }
 
     public StudentResponseDTO uploadCv(Long id, MultipartFile file) {
+        log.info("Starting CV upload for student ID: {}, file: {}", id, file.getOriginalFilename());
         try {
             StudentEntity student = getStudentEntityById(id);
+            log.info("Student found: {}", student.getName());
             
             // Delete old CV if exists
             if (student.getCvUrl() != null) {
+                log.info("Deleting old CV: {}", student.getCvUrl());
                 minioService.deleteFile(student.getCvUrl());
             }
             
+            log.info("Uploading new CV to MinIO...");
             String cvUrl = minioService.uploadCurriculum(file);
+            log.info("CV uploaded successfully. URL: {}", cvUrl);
+            
             student.setCvUrl(cvUrl);
             student.setCvFileName(file.getOriginalFilename());
             StudentEntity saved = studentRepository.save(student);
+            log.info("Student updated in database with CV URL");
+            
             return studentMapper.toResponseDTO(saved);
         } catch (Exception e) {
-            throw new RuntimeException("Error uploading CV: " + e.getMessage());
+            log.error("Error uploading CV for student {}: {}", id, e.getMessage(), e);
+            throw new RuntimeException("Error uploading CV: " + e.getMessage(), e);
         }
     }
 

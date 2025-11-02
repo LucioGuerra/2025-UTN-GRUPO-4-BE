@@ -55,11 +55,20 @@ public class MinioService {
     }
 
     public String uploadCurriculum(MultipartFile file) throws Exception {
+        log.info("Starting curriculum upload. File: {}, Size: {}, ContentType: {}", 
+                file.getOriginalFilename(), file.getSize(), file.getContentType());
+        
         validatePdfFile(file);
         String fileName = sanitizeFileName(file.getOriginalFilename());
+        log.info("Generated filename: {}", fileName);
+        
+        log.info("MinIO URL: {}, AccessKey: {}", minioUrl, accessKey != null ? "[SET]" : "[NOT SET]");
         
         MinioClient client = getMinioClient();
+        log.info("MinIO client created successfully");
+        
         ensureBucketExists(client, "curriculum");
+        log.info("Bucket 'curriculum' verified/created");
         
         client.putObject(
                 PutObjectArgs.builder()
@@ -70,8 +79,9 @@ public class MinioService {
                         .build()
         );
         
-        log.info("Uploaded CV: {}", fileName);
-        return minioUrl + "/curriculum/" + fileName;
+        String finalUrl = minioUrl + "/curriculum/" + fileName;
+        log.info("CV uploaded successfully. Final URL: {}", finalUrl);
+        return finalUrl;
     }
 
     private void validateImageFile(MultipartFile file) {
@@ -124,10 +134,14 @@ public class MinioService {
     }
 
     private void ensureBucketExists(MinioClient client, String bucketName) throws Exception {
+        log.info("Checking if bucket '{}' exists...", bucketName);
         boolean exists = client.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
+        log.info("Bucket '{}' exists: {}", bucketName, exists);
+        
         if (!exists) {
+            log.info("Creating bucket: {}", bucketName);
             client.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
-            log.info("Created bucket: {}", bucketName);
+            log.info("Bucket '{}' created successfully", bucketName);
         }
     }
 }
