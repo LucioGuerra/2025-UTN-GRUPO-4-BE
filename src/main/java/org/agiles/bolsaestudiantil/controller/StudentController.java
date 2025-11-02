@@ -58,4 +58,18 @@ public class StudentController {
         Map<String, Object> result = studentService.processGradesFromExcel(id, file, authToken);
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("/{id}/upload-cv")
+    public ResponseEntity<StudentResponseDTO> uploadCv(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
+        StudentResponseDTO response = studentService.uploadCv(id, file);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}/delete-cv")
+    public ResponseEntity<StudentResponseDTO> deleteCv(@PathVariable Long id) {
+        StudentResponseDTO response = studentService.deleteCv(id);
+        return ResponseEntity.ok(response);
+    }
 }

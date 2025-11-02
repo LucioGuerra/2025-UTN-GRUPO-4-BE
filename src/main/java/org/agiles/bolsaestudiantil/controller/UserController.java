@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/users")
@@ -31,6 +32,20 @@ public class UserController {
         filter.setSearch(search);
         
         Page<UserResponseDTO> response = userService.searchUsers(filter, pageable);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{id}/upload-image")
+    public ResponseEntity<UserResponseDTO> uploadProfileImage(
+            @PathVariable Long id,
+            @RequestParam("file") MultipartFile file) {
+        UserResponseDTO response = userService.uploadProfileImage(id, file);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}/delete-image")
+    public ResponseEntity<UserResponseDTO> deleteProfileImage(@PathVariable Long id) {
+        UserResponseDTO response = userService.deleteProfileImage(id);
         return ResponseEntity.ok(response);
     }
 }
