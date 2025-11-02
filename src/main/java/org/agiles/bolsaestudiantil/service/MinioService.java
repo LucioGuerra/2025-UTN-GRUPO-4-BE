@@ -1,9 +1,12 @@
 package org.agiles.bolsaestudiantil.service;
 
+import io.minio.BucketExistsArgs;
+import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.RemoveObjectArgs;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -12,6 +15,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MinioService {
 
     @Value("${minio.url:https://api-minio.lafuah.com}")
@@ -34,7 +38,10 @@ public class MinioService {
         validateImageFile(file);
         String fileName = sanitizeFileName(file.getOriginalFilename());
         
-        getMinioClient().putObject(
+        MinioClient client = getMinioClient();
+        ensureBucketExists(client, "image");
+        
+        client.putObject(
                 PutObjectArgs.builder()
                         .bucket("image")
                         .object(fileName)
@@ -43,6 +50,7 @@ public class MinioService {
                         .build()
         );
         
+        log.info("Uploaded image: {}", fileName);
         return minioUrl + "/image/" + fileName;
     }
 
@@ -50,7 +58,10 @@ public class MinioService {
         validatePdfFile(file);
         String fileName = sanitizeFileName(file.getOriginalFilename());
         
-        getMinioClient().putObject(
+        MinioClient client = getMinioClient();
+        ensureBucketExists(client, "curriculum");
+        
+        client.putObject(
                 PutObjectArgs.builder()
                         .bucket("curriculum")
                         .object(fileName)
@@ -59,6 +70,7 @@ public class MinioService {
                         .build()
         );
         
+        log.info("Uploaded CV: {}", fileName);
         return minioUrl + "/curriculum/" + fileName;
     }
 
@@ -103,10 +115,19 @@ public class MinioService {
                                     .object(fileName)
                                     .build()
                     );
+                    log.info("Deleted file: {}", fileName);
                 }
             }
         } catch (Exception e) {
-            // Log error but don't fail the operation
+            log.error("Error deleting file: {}", fileUrl, e);
+        }
+    }
+
+    private void ensureBucketExists(MinioClient client, String bucketName) throws Exception {
+        boolean exists = client.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
+        if (!exists) {
+            client.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+            log.info("Created bucket: {}", bucketName);
         }
     }
 }
