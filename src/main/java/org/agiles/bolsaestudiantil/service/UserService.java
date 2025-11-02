@@ -20,6 +20,7 @@ import org.agiles.bolsaestudiantil.repository.UserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -33,6 +34,7 @@ public class UserService {
     private final StudentMapper studentMapper;
     private final OrganizationMapper organizationMapper;
     private final UserMapper userMapper;
+    private final MinioService minioService;
 
 
     public UserEntity getUserById(Long id) {
@@ -100,5 +102,56 @@ public class UserService {
         
         Page<UserEntity> users = userRepository.findByNameOrSurnameContaining(filter.getSearch(), pageable);
         return users.map(this::userToDTO);
+    }
+
+    public UserResponseDTO uploadProfileImage(Long id, MultipartFile file) {
+        try {
+            UserEntity user = getUserById(id);
+            if (user == null) {
+                throw new EntityNotFoundException("User not found with id: " + id);
+            }
+            
+            // Delete old image if exists
+            if (user.getImageUrl() != null) {
+                minioService.deleteFile(user.getImageUrl());
+            }
+            
+            String imageUrl = minioService.uploadProfileImage(file);
+            user.setImageUrl(imageUrl);
+            
+            if (user instanceof StudentEntity) {
+                StudentEntity saved = studentRepository.save((StudentEntity) user);
+                return mapToStudentDTO(saved);
+            } else if (user instanceof OrganizationEntity) {
+                OrganizationEntity saved = organizationRepository.save((OrganizationEntity) user);
+                return mapToOrganizationDTO(saved);
+            }
+            
+            throw new RuntimeException("Unknown user type");
+        } catch (Exception e) {
+            throw new RuntimeException("Error uploading image: " + e.getMessage());
+        }
+    }
+
+    public UserResponseDTO deleteProfileImage(Long id) {
+        UserEntity user = getUserById(id);
+        if (user == null) {
+            throw new EntityNotFoundException("User not found with id: " + id);
+        }
+        
+        if (user.getImageUrl() != null) {
+            minioService.deleteFile(user.getImageUrl());
+            user.setImageUrl(null);
+        }
+        
+        if (user instanceof StudentEntity) {
+            StudentEntity saved = studentRepository.save((StudentEntity) user);
+            return mapToStudentDTO(saved);
+        } else if (user instanceof OrganizationEntity) {
+            OrganizationEntity saved = organizationRepository.save((OrganizationEntity) user);
+            return mapToOrganizationDTO(saved);
+        }
+        
+        throw new RuntimeException("Unknown user type");
     }
 }

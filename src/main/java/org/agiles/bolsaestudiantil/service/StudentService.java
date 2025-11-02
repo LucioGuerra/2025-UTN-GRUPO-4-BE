@@ -38,6 +38,7 @@ public class StudentService {
     private final StudentSubjectRepository studentSubjectRepository;
     private final SubjectMapper subjectMapper;
     private final GradeProcessorClient gradeProcessorClient;
+    private final MinioService minioService;
 
     public StudentEntity getStudentEntityById(Long id) {
         return studentRepository.findById(id)
@@ -175,5 +176,37 @@ public class StudentService {
     public Map<String, Object> processGradesFromExcel(Long id, MultipartFile file, String authToken) {
         getStudentEntityById(id); // Validate student exists
         return gradeProcessorClient.processGrades(file, id.toString(), authToken.replace("Bearer ", ""));
+    }
+
+    public StudentResponseDTO uploadCv(Long id, MultipartFile file) {
+        try {
+            StudentEntity student = getStudentEntityById(id);
+            
+            // Delete old CV if exists
+            if (student.getCvUrl() != null) {
+                minioService.deleteFile(student.getCvUrl());
+            }
+            
+            String cvUrl = minioService.uploadCurriculum(file);
+            student.setCvUrl(cvUrl);
+            student.setCvFileName(file.getOriginalFilename());
+            StudentEntity saved = studentRepository.save(student);
+            return studentMapper.toResponseDTO(saved);
+        } catch (Exception e) {
+            throw new RuntimeException("Error uploading CV: " + e.getMessage());
+        }
+    }
+
+    public StudentResponseDTO deleteCv(Long id) {
+        StudentEntity student = getStudentEntityById(id);
+        
+        if (student.getCvUrl() != null) {
+            minioService.deleteFile(student.getCvUrl());
+            student.setCvUrl(null);
+            student.setCvFileName(null);
+        }
+        
+        StudentEntity saved = studentRepository.save(student);
+        return studentMapper.toResponseDTO(saved);
     }
 }
