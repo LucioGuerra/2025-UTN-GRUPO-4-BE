@@ -28,7 +28,7 @@ public class ApplyController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<ApplyResponseDTO>> getAllApplies(
+    public ResponseEntity<Page<? extends Object>> getAllApplies(
             @RequestParam(required = false) Long studentId,
             @RequestParam(required = false) Long offerId,
             Pageable pageable) {
@@ -37,7 +37,7 @@ public class ApplyController {
         filter.setStudentId(studentId);
         filter.setOfferId(offerId);
         
-        Page<ApplyResponseDTO> response = applyService.getAllApplies(filter, pageable);
+        Page<? extends Object> response = applyService.getAllApplies(filter, pageable);
         return ResponseEntity.ok(response);
     }
 

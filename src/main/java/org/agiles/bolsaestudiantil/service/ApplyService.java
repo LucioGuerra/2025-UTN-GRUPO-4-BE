@@ -45,9 +45,16 @@ public class ApplyService {
         return applyMapper.toResponseDTO(saved);
     }
 
-    public Page<ApplyResponseDTO> getAllApplies(ApplyFilter filter, Pageable pageable) {
+    public Page<? extends Object> getAllApplies(ApplyFilter filter, Pageable pageable) {
         Page<ApplyEntity> applies = applyRepository.findAll(ApplySpecification.withFilters(filter), pageable);
-        return applies.map(applyMapper::toResponseDTO);
+        
+        if (filter.getStudentId() != null && filter.getOfferId() == null) {
+            // Filtering by student: return offers the student applied to
+            return applies.map(applyMapper::toStudentResponseDTO);
+        } else {
+            // Filtering by offer or no filter: return students who applied
+            return applies.map(applyMapper::toOfferResponseDTO);
+        }
     }
 
     public ApplyResponseDTO updateApply(Long id, ApplyUpdateRequestDTO request) {
