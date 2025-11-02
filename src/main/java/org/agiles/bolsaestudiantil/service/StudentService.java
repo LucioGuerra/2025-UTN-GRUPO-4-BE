@@ -91,29 +91,19 @@ public class StudentService {
         if (request.getCoverLetter() != null) entity.setCoverLetter(request.getCoverLetter());
         
         if (request.getAttributes() != null) {
-            List<AttributeEntity> attributes = request.getAttributes().stream()
+            entity.getAttributes().clear();
+            List<AttributeEntity> newAttributes = request.getAttributes().stream()
                     .map(attributeService::findOrCreateAttribute)
                     .toList();
-            entity.setAttributes(attributes);
+            entity.getAttributes().addAll(newAttributes);
         }
         
         if (request.getLanguages() != null) {
-            List<LanguageEntity> languages = request.getLanguages().stream()
-                    .map(langReq -> {
-                        LanguageEntity existing = entity.getLanguages().stream()
-                                .filter(lang -> lang.getName().equals(langReq.getName()))
-                                .findFirst()
-                                .orElse(null);
-                        
-                        if (existing != null) {
-                            existing.setLevel(langReq.getLevel());
-                            return existing;
-                        } else {
-                            return languageService.createLanguage(langReq.getName(), langReq.getLevel());
-                        }
-                    })
+            entity.getLanguages().clear();
+            List<LanguageEntity> newLanguages = request.getLanguages().stream()
+                    .map(langReq -> languageService.createLanguage(langReq.getName(), langReq.getLevel()))
                     .toList();
-            entity.setLanguages(languages);
+            entity.getLanguages().addAll(newLanguages);
         }
     }
 
