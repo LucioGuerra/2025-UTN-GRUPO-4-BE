@@ -34,7 +34,7 @@ public class UserService {
     private final StudentMapper studentMapper;
     private final OrganizationMapper organizationMapper;
     private final UserMapper userMapper;
-    private final MinioService minioService;
+    private final AzureBlobService azureBlobService;
 
 
     public UserEntity getUserById(Long id) {
@@ -113,10 +113,10 @@ public class UserService {
             
             // Delete old image if exists
             if (user.getImageUrl() != null) {
-                minioService.deleteFile(user.getImageUrl());
+                azureBlobService.deleteFile(user.getImageUrl());
             }
             
-            String imageUrl = minioService.uploadProfileImage(file);
+            String imageUrl = azureBlobService.uploadProfileImage(file);
             user.setImageUrl(imageUrl);
             
             if (user instanceof StudentEntity) {
@@ -140,7 +140,7 @@ public class UserService {
         }
         
         if (user.getImageUrl() != null) {
-            minioService.deleteFile(user.getImageUrl());
+            azureBlobService.deleteFile(user.getImageUrl());
             user.setImageUrl(null);
         }
         

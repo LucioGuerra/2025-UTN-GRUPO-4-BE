@@ -40,7 +40,7 @@ public class StudentService {
     private final StudentSubjectRepository studentSubjectRepository;
     private final SubjectMapper subjectMapper;
     private final GradeProcessorClient gradeProcessorClient;
-    private final MinioService minioService;
+    private final AzureBlobService azureBlobService;
 
     public StudentEntity getStudentEntityById(Long id) {
         return studentRepository.findById(id)
@@ -179,11 +179,11 @@ public class StudentService {
             // Delete old CV if exists
             if (student.getCvUrl() != null) {
                 log.info("Deleting old CV: {}", student.getCvUrl());
-                minioService.deleteFile(student.getCvUrl());
+                azureBlobService.deleteFile(student.getCvUrl());
             }
             
             log.info("Uploading new CV to MinIO...");
-            String cvUrl = minioService.uploadCurriculum(file);
+            String cvUrl = azureBlobService.uploadCurriculum(file);
             log.info("CV uploaded successfully. URL: {}", cvUrl);
             
             student.setCvUrl(cvUrl);
@@ -202,7 +202,7 @@ public class StudentService {
         StudentEntity student = getStudentEntityById(id);
         
         if (student.getCvUrl() != null) {
-            minioService.deleteFile(student.getCvUrl());
+            azureBlobService.deleteFile(student.getCvUrl());
             student.setCvUrl(null);
             student.setCvFileName(null);
         }
