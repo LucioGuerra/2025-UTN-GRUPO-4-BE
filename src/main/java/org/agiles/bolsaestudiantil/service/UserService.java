@@ -57,6 +57,17 @@ public class UserService {
         return getUserDTOById(user.getId());
     }
 
+    public UserEntity getUserEntityByKeycloakId(String keycloakId) {
+        UserEntity user = studentRepository.findByKeycloakId(keycloakId).orElse(null);
+        if (user == null) {
+            user = organizationRepository.findByKeycloakId(keycloakId).orElse(null);
+        }
+        if (user == null) {
+            throw new EntityNotFoundException("User not found with keycloakId: " + keycloakId);
+        }
+        return user;
+    }
+
     public UserResponseDTO userToDTO(UserEntity userEntity) {
         if (userEntity == null) {
             return null;
