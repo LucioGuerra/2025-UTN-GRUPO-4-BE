@@ -144,12 +144,11 @@ public class OfferService {
             dto.setNegativeVotes(voteInfo.getNegativeVotes());
             dto.setTotalScore(voteInfo.getTotalScore());
             dto.setUserVote(voteInfo.getUserVote());
-        } catch (Exception e) {
-            // Si hay error obteniendo la info de votos, usar valores por defecto
-            dto.setPositiveVotes(0);
-            dto.setNegativeVotes(0);
-            dto.setTotalScore(0);
-            dto.setUserVote(null);
+        } catch (Exception ex) {
+            if (ex instanceof EntityNotFoundException entityNotFound) {
+                throw entityNotFound;
+            }
+            throw new EntityNotFoundException("Informacion de votos de dicha oferta no disponible");
         }
     }
 }
