@@ -6,7 +6,12 @@ import org.agiles.bolsaestudiantil.entity.StudentEntity;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {LanguageMapper.class, SubjectMapper.class})
+@Mapper(componentModel = "spring", uses = {
+        LanguageMapper.class,
+        SubjectMapper.class,
+        WorkExperienceMapper.class,
+        AssociationMapper.class
+})
 public interface StudentMapper {
     
     @Mapping(target = "role", constant = "Student")
