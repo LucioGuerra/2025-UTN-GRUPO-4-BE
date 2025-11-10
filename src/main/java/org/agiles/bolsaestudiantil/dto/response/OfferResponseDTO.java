@@ -27,5 +27,13 @@ public class OfferResponseDTO {
 
     private UserResponseDTO bidder;
 
+    private Integer positiveVotes;
+
+    private Integer negativeVotes;
+
+    private Integer totalScore;
+
+    private Boolean userVote; // null = no votó, true = like, false = dislike
+
 
 }

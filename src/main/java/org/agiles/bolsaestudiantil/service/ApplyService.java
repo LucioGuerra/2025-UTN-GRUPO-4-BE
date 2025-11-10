@@ -2,6 +2,7 @@ package org.agiles.bolsaestudiantil.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.agiles.bolsaestudiantil.dto.internal.ApplyFilter;
 import org.agiles.bolsaestudiantil.dto.request.ApplyRequestDTO;
 import org.agiles.bolsaestudiantil.dto.request.update.ApplyUpdateRequestDTO;
@@ -13,6 +14,7 @@ import org.agiles.bolsaestudiantil.repository.ApplyRepository;
 import org.agiles.bolsaestudiantil.mapper.ApplyMapper;
 import org.agiles.bolsaestudiantil.mapper.OfferMapper;
 import org.agiles.bolsaestudiantil.mapper.StudentMapper;
+import org.agiles.bolsaestudiantil.util.AuthenticationUtil;
 import org.agiles.bolsaestudiantil.specification.ApplySpecification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ApplyService {
 
     private final ApplyRepository applyRepository;
@@ -29,6 +32,7 @@ public class ApplyService {
     private final ApplyMapper applyMapper;
     private final OfferMapper offerMapper;
     private final StudentMapper studentMapper;
+    private final OfferVoteService offerVoteService;
 
     public ApplyResponseDTO createApply(ApplyRequestDTO request) {
         ApplyEntity apply = new ApplyEntity();
@@ -42,6 +46,20 @@ public class ApplyService {
         apply.setCustomCoverLetter(request.getCustomCoverLetter());
         
         ApplyEntity saved = applyRepository.save(apply);
+
+        String keycloakId = student.getKeycloakId();
+        if (keycloakId == null || keycloakId.isBlank()) {
+            keycloakId = AuthenticationUtil.getKeycloakIdFromAuthentication();
+        }
+
+        if (keycloakId != null && !keycloakId.isBlank()) {
+            try {
+                offerVoteService.addPositiveVote(request.getOfferId(), keycloakId);
+            } catch (Exception ex) {
+                log.warn("Unable to auto-like offer {} for student {}: {}", request.getOfferId(), student.getId(), ex.getMessage());
+            }
+        }
+
         return applyMapper.toResponseDTO(saved);
     }
 

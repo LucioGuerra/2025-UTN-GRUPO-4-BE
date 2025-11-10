@@ -40,9 +40,25 @@ public class OfferEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity bidder;
 
+    @Column(nullable = false)
+    private Integer positiveVotes = 0;
+
+    @Column(nullable = false)
+    private Integer negativeVotes = 0;
+
+    @OneToMany(mappedBy = "offer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OfferVoteEntity> votes;
+
     public OfferEntity() {
         this.applyList = new ArrayList<>();
         this.attributes = new ArrayList<>();
+        this.votes = new ArrayList<>();
+        this.positiveVotes = 0;
+        this.negativeVotes = 0;
+    }
+
+    public Integer getTotalScore() {
+        return positiveVotes - negativeVotes;
     }
 
 }
