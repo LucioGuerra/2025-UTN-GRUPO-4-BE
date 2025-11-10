@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.agiles.bolsaestudiantil.repository.OrganizationStudentAssociationRepository;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -51,12 +52,20 @@ public class StudentEntity extends UserEntity {
     @JoinColumn(name = "student_id")
     private List<LanguageEntity> languages;
 
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<WorkExperienceEntity> workExperience;
+
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrganizationStudentAssociationEntity> associatedCompanies;
+
     public StudentEntity() {
         super();
         this.applies = new ArrayList<>();
         this.attributes = new ArrayList<>();
         this.subjects = new ArrayList<>();
         this.languages = new ArrayList<>();
+        this.workExperience = new ArrayList<>();
+        this.associatedCompanies = new ArrayList<>();
     }
 
 }
