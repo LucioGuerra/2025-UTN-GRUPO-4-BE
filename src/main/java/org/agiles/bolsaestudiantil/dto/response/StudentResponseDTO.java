@@ -38,4 +38,8 @@ public class StudentResponseDTO extends UserResponseDTO {
     private List<LanguageResponseDTO> languages;
     
     private List<SubjectResponseDTO> subjects;
+
+    private List<WorkExperienceResponseDTO>  workExperience;
+
+    private List<AssociatedCompanyDTO> associatedCompanies;
 }

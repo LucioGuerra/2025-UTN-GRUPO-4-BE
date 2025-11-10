@@ -31,6 +31,7 @@ public class OfferService {
     private final UserService userService;
     private final OfferMapper offerMapper;
     private final StudentMapper studentMapper;
+    private final OfferVoteService offerVoteService;
 
     public OfferResponseDTO createOffer(OfferRequestDTO request) {
         OfferEntity entity = mapToEntity(request);
@@ -44,6 +45,7 @@ public class OfferService {
         OfferEntity entity = getOfferEntityById(id);
         OfferResponseDTO dto = offerMapper.toResponseDTO(entity);
         dto.setApplyList(mapApplyList(entity.getApplyList()));
+        enrichWithVoteInfo(dto, id);
         return dto;
     }
 
@@ -52,6 +54,7 @@ public class OfferService {
         return offers.map(entity -> {
             OfferResponseDTO dto = offerMapper.toResponseDTO(entity);
             dto.setApplyList(mapApplyList(entity.getApplyList()));
+            enrichWithVoteInfo(dto, entity.getId());
             return dto;
         });
     }
@@ -131,5 +134,21 @@ public class OfferService {
                     return dto;
                 })
                 .toList();
+    }
+
+    private void enrichWithVoteInfo(OfferResponseDTO dto, Long offerId) {
+        try {
+            String keycloakId = org.agiles.bolsaestudiantil.util.AuthenticationUtil.getKeycloakIdFromAuthentication();
+            org.agiles.bolsaestudiantil.dto.response.OfferVoteResponseDTO voteInfo = offerVoteService.getOfferVotes(offerId, keycloakId);
+            dto.setPositiveVotes(voteInfo.getPositiveVotes());
+            dto.setNegativeVotes(voteInfo.getNegativeVotes());
+            dto.setTotalScore(voteInfo.getTotalScore());
+            dto.setUserVote(voteInfo.getUserVote());
+        } catch (Exception ex) {
+            if (ex instanceof EntityNotFoundException entityNotFound) {
+                throw entityNotFound;
+            }
+            throw new EntityNotFoundException("Informacion de votos de dicha oferta no disponible");
+        }
     }
 }
