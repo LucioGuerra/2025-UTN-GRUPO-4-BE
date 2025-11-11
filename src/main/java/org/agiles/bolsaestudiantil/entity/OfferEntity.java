@@ -40,10 +40,10 @@ public class OfferEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private UserEntity bidder;
 
-    @Column(nullable = false)
+    @Column()
     private Integer positiveVotes = 0;
 
-    @Column(nullable = false)
+    @Column()
     private Integer negativeVotes = 0;
 
     @OneToMany(mappedBy = "offer", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
