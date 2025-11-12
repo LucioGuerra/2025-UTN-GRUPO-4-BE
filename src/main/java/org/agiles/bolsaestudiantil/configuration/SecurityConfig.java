@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // Permitir swagger y endpoints públicos
                         .requestMatchers(SWAGGER_WHITELIST).permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/organizations").permitAll()
                         // El resto requiere autenticación
                         .anyRequest().authenticated()
                 )
@@ -62,5 +63,4 @@ public class SecurityConfig {
         return converter;
     }
 }
-
 ///     wqeqew
