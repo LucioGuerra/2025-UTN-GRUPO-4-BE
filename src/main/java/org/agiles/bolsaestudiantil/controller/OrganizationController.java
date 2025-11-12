@@ -22,6 +22,12 @@ public class OrganizationController {
     private final OrganizationService organizationService;
     private final AssociationService associationService;
 
+    @GetMapping
+    public ResponseEntity<List<OrganizationResponseDTO>> getAllOrganizations() {
+        List<OrganizationResponseDTO> response = organizationService.getAllOrganizations();
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<OrganizationResponseDTO> getOrganizationById(@PathVariable Long id) {
         OrganizationResponseDTO response = organizationService.getOrganizationById(id);
