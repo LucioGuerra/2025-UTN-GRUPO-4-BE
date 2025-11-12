@@ -42,4 +42,6 @@ public class StudentResponseDTO extends UserResponseDTO {
     private List<WorkExperienceResponseDTO>  workExperience;
 
     private List<AssociatedCompanyDTO> associatedCompanies;
+
+    private List<PersonalProjectResponseDTO> personalProjects;
 }
