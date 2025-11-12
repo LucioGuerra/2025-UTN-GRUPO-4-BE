@@ -58,6 +58,9 @@ public class StudentEntity extends UserEntity {
     @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrganizationStudentAssociationEntity> associatedCompanies;
 
+    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PersonalProjectEntity> personalProjects;
+
     public StudentEntity() {
         super();
         this.applies = new ArrayList<>();
@@ -66,6 +69,7 @@ public class StudentEntity extends UserEntity {
         this.languages = new ArrayList<>();
         this.workExperience = new ArrayList<>();
         this.associatedCompanies = new ArrayList<>();
+        this.personalProjects = new ArrayList<>();
     }
 
 }

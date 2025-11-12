@@ -10,7 +10,8 @@ import org.mapstruct.Mapping;
         LanguageMapper.class,
         SubjectMapper.class,
         WorkExperienceMapper.class,
-        AssociationMapper.class
+        AssociationMapper.class,
+        PersonalProjectMapper.class
 })
 public interface StudentMapper {
     
