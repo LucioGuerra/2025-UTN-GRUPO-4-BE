@@ -12,6 +12,9 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @AllArgsConstructor
 public class OrganizationService {
@@ -23,6 +26,13 @@ public class OrganizationService {
     public OrganizationEntity getOrganizationEntityById(Long id) {
         return organizationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Organization not found with id: " + id));
+    }
+
+    public List<OrganizationResponseDTO> getAllOrganizations() {
+        List<OrganizationEntity> organizations = organizationRepository.findAll();
+        return organizations.stream()
+                .map(organizationMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
 
     public OrganizationResponseDTO getOrganizationById(Long id) {
