@@ -5,22 +5,24 @@ import lombok.AllArgsConstructor;
 import org.agiles.bolsaestudiantil.dto.internal.OfferFilter;
 import org.agiles.bolsaestudiantil.dto.request.OfferRequestDTO;
 import org.agiles.bolsaestudiantil.dto.request.update.OfferUpdateRequestDTO;
-import org.agiles.bolsaestudiantil.entity.ApplyEntity;
+import org.agiles.bolsaestudiantil.entity.*;
 import org.agiles.bolsaestudiantil.dto.response.apply.ApplyForOfferResponseDTO;
 import org.agiles.bolsaestudiantil.dto.response.student.StudentSummaryResponseDTO;
 import org.agiles.bolsaestudiantil.mapper.OfferMapper;
 import org.agiles.bolsaestudiantil.mapper.StudentMapper;
 import org.agiles.bolsaestudiantil.dto.response.OfferResponseDTO;
-import org.agiles.bolsaestudiantil.entity.AttributeEntity;
-import org.agiles.bolsaestudiantil.entity.OfferEntity;
-import org.agiles.bolsaestudiantil.entity.UserEntity;
 import org.agiles.bolsaestudiantil.repository.OfferRepository;
 import org.agiles.bolsaestudiantil.specification.OfferSpecification;
+import org.agiles.bolsaestudiantil.util.AuthenticationUtil;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -57,6 +59,73 @@ public class OfferService {
             enrichWithVoteInfo(dto, entity.getId());
             return dto;
         });
+    }
+
+    public Page<OfferResponseDTO> getRecommendedOffers(Pageable pageable) {
+        String keycloackId = AuthenticationUtil.getKeycloakIdFromAuthentication();
+        if (keycloackId == null) {
+            return getAllOffers(new OfferFilter(), pageable);
+        }
+
+        UserEntity user = userService.getUserEntityByKeycloakId(keycloackId);
+        if (!(user instanceof UserEntity)) {
+            return getAllOffers(new OfferFilter(), pageable);
+        }
+
+        StudentEntity student = (StudentEntity) user;
+        List<AttributeEntity> studentAttributes = student.getAttributes();
+
+        List<OfferEntity> allOffers = offerRepository.findAll();
+
+        Map<OfferEntity, Double> offerScores = new HashMap<>();
+
+        final double PESO_VOTO = 1.0;
+        final double PESO_ATRIBUTO = 5.0;
+
+        for (OfferEntity offer : allOffers) {
+            double voteScore = offer.getTotalScore() * PESO_VOTO;
+            double matchScore = calculateMatchScore(studentAttributes, offer.getAttributes()) * PESO_ATRIBUTO;
+            double finalScore = voteScore + matchScore;
+            offerScores.put(offer, finalScore);
+        }
+
+        List<OfferEntity> sortedOffers = allOffers.stream()
+                .sorted((o1, o2) -> offerScores.get(o2).compareTo(offerScores.get(o1)))
+                .collect(Collectors.toList());
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), sortedOffers.size());
+
+        List<OfferEntity> pageContent = (start > end) ? List.of() : sortedOffers.subList(start, end);
+
+        List<OfferResponseDTO> dtoList = pageContent.stream()
+                .map(entity -> {
+                    OfferResponseDTO dto = offerMapper.toResponseDTO(entity);
+                    dto.setApplyList(mapApplyList(entity.getApplyList()));
+                    enrichWithVoteInfo(dto, entity.getId());
+                    return dto;
+                })
+                .toList();
+
+        return new PageImpl<>(dtoList, pageable, sortedOffers.size());
+    }
+
+    private long calculateMatchScore(List<AttributeEntity> studentAttributes, List<AttributeEntity> offerAttributes) {
+        if (studentAttributes == null || offerAttributes == null || studentAttributes.isEmpty() || offerAttributes.isEmpty()) {
+            return 0;
+        }
+
+        var studentAttrNames = studentAttributes.stream()
+                .map(AttributeEntity::getName)
+                .collect(Collectors.toSet());
+
+        var offerAttrNames = offerAttributes.stream()
+                .map(AttributeEntity::getName)
+                .collect(Collectors.toSet());
+
+        studentAttrNames.retainAll(offerAttrNames);
+
+        return studentAttrNames.size();
     }
 
     public OfferResponseDTO updateOffer(Long id, OfferUpdateRequestDTO request) {

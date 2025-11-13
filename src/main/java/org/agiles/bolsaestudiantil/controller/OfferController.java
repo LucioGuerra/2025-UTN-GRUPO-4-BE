@@ -55,6 +55,12 @@ public class OfferController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/recommended")
+    public ResponseEntity<Page<OfferResponseDTO>> getRecommendedOffers(Pageable pageable) {
+        Page<OfferResponseDTO> response = offerService.getRecommendedOffers(pageable);
+        return ResponseEntity.ok(response);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<OfferResponseDTO> updateOffer(@PathVariable Long id, @RequestBody OfferUpdateRequestDTO request) {
         OfferResponseDTO response = offerService.updateOffer(id, request);
